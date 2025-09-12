@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { SkillPassportLogo } from "@/components/skill-passport-logo"
 import { Award, Plus, TrendingUp, Shield, Eye, Wallet, Copy, ExternalLink, Zap, Globe, Users } from "lucide-react"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
 import { WalletStatusIndicator } from "@/components/wallet-status-indicator"
@@ -75,12 +76,12 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Shield className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-200 to-blue-300 rounded-xl flex items-center justify-center shadow-sm">
+                <SkillPassportLogo className="w-12 h-12 text-black font-bold" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold">
-                  Skill Passport
+                <h1 className="text-4xl font-bold text-blue-500 font-poppins">
+                  Skill Badge
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-gray-900 text-sm font-mono">
@@ -100,7 +101,7 @@ export default function DashboardPage() {
             <div className="flex gap-3">
               <Button 
               asChild
-              className="bg-blue-500 hover:bg-blue-700 text-white border-0 shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 font-semibold"
+              className="bg-blue-500 hover:bg-blue-700 text-white border-0 shadow-sm shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 font-semibold"
             >
               <Link href="/mint">
                 <Plus className="w-4 h-4 mr-2" />

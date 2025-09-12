@@ -58,7 +58,7 @@ export function Sidebar() {
         {/* Logo Section */}
         <div className="px-6 py-8">
           <Link href="/" className="group flex items-center transition-all duration-300 hover:scale-105">
-            <div className="relative w-10 h-10 mr-4 p-1 rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-600/20 group-hover:from-blue-500/20 group-hover:to-blue-600/30 transition-all duration-300">
+            <div className="relative w-10 h-10 mr-4 p-1 border-1 border-blue-300 shadow-sm rounded-xl bg-gradient-to-br from-blue-500/10 to-blue-600/20 group-hover:from-blue-500/20 group-hover:to-blue-600/30 transition-all duration-300">
               <SkillPassportLogo />
             </div>
             <div>
