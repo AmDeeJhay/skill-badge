@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import type { InjectedAccountWithMeta, InjectedExtension, WalletState } from "@/lib/types"
+import { getCredentialsByAddress, getCredentialStats } from "@/lib/mock-data"
 
 declare global {
   interface Window {
@@ -179,6 +180,10 @@ export function usePolkadotWallet() {
     restoreConnection()
   }, [getAvailableWallets])
 
+  // Get credentials for the selected account
+  const credentials = walletState.selectedAccount ? getCredentialsByAddress(walletState.selectedAccount.address) : []
+  const stats = getCredentialStats(credentials)
+
   return {
     ...walletState,
     connectWallet,
@@ -187,6 +192,8 @@ export function usePolkadotWallet() {
     formatAddress,
     availableWallets: getAvailableWallets(),
     supportedWallets: SUPPORTED_WALLETS,
-    isExtensionAvailable: isExtensionAvailable(), // Add this line
+    isExtensionAvailable: isExtensionAvailable(),
+    credentials,
+    stats,
   }
 }

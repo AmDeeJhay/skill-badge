@@ -156,14 +156,42 @@ export default function DashboardPage() {
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                     <Zap className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded">+12%</span>
+                  {stats?.thisMonth > 0 && (
+                    <span className="text-xs text-blue-500 bg-blue-500/10 px-2 py-1 rounded">New</span>
+                  )}
                 </div>
                 <div className="text-2xl font-bold text-gray-900 mb-1">{stats?.thisMonth ?? 0}</div>
                 <div className="text-xs text-black">This Month</div>
               </CardContent>
             </GlowingCard>
 
-            {/* Add more cards as needed, or remove if not available in your stats */}
+            <GlowingCard glowColor="blue" className="shadow-sm hover:shadow-md">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                </div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{credentials?.filter(c => c.verified).length ?? 0}</div>
+                <div className="text-xs text-black">Skill Areas</div>
+              </CardContent>
+            </GlowingCard>
+
+            <GlowingCard glowColor="blue" className="shadow-sm hover:shadow-md">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+                    <Globe className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="text-xs text-purple-500 bg-purple-500/10 px-2 py-1 rounded">Live</span>
+                </div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">{stats?.verified ?? 0}</div>
+                <div className="text-xs text-black">Public Profile</div>
+              </CardContent>
+            </GlowingCard>
+
+
           </div>
 
           {/* Recent Credentials */}
@@ -175,7 +203,7 @@ export default function DashboardPage() {
               </div>
               <Button variant="outline" className="border-blue-500/50 hover:border-blue-400 text-blue-500 hover:text-blue-600 bg-white hover:bg-blue-50" asChild>
                 <Link href="/profile">
-                  View All
+                  View All Credentials
                   <ExternalLink className="w-3 h-3 ml-2" />
                 </Link>
               </Button>
@@ -183,9 +211,13 @@ export default function DashboardPage() {
 
             {credentials && credentials.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {credentials.slice(0, 4).map((credential) => (
-                  <CredentialBadge key={credential.id} credential={credential} size="md" showActions={true} />
-                ))}
+                {credentials
+                  .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
+                  .slice(0, 4)
+                  .map((credential) => (
+                    <CredentialBadge key={credential.id} credential={credential} size="md" showActions={true} />
+                  ))
+                }
               </div>
             ) : (
               <GlowingCard className="p-12 text-center shadow-md hover:shadow-md">

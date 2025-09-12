@@ -102,7 +102,6 @@ export default function CredentialPage() {
   if (!credential) {
     return (
       <div className="min-h-screen bg-background">
-        <Navigation />
         <div className="container mx-auto px-4 py-20">
           <div className="text-center max-w-md mx-auto">
             <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-6" />

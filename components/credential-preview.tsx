@@ -7,51 +7,74 @@ import { CheckCircle, ExternalLink, Share2, Award } from "lucide-react"
 import type { CredentialFormData } from "@/lib/validation"
 
 interface CredentialPreviewProps {
-  credentialData: CredentialFormData
+  credentialData?: CredentialFormData
+  skillName?: string
+  issuer?: string
+  level?: string
+  issueDate?: string
+  description?: string
   transactionHash?: string
   credentialId?: string
+  isVerified?: boolean
   onShare?: () => void
   onViewTransaction?: () => void
 }
 
 export function CredentialPreview({
   credentialData,
+  skillName,
+  issuer,
+  level,
+  issueDate,
+  description,
   transactionHash,
   credentialId,
+  isVerified = false,
   onShare,
   onViewTransaction,
 }: CredentialPreviewProps) {
-  const badgeColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-pink-500", "bg-orange-500", "bg-cyan-500"]
+  // Use credentialData if provided, otherwise use individual props
+  const skill = credentialData?.skillName || skillName || "Your Skill"
+  const issuerName = credentialData?.issuerName || issuer || "Issuing Organization"
+  const skillLevel = credentialData?.skillLevel || level || ""
+  const issued = credentialData?.issueDate || issueDate || new Date().toISOString().split('T')[0]
+  const desc = credentialData?.description || description || ""
 
-  const badgeColor = badgeColors[credentialData.skillName.length % badgeColors.length]
+  const badgeColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-pink-500", "bg-orange-500", "bg-cyan-500"]
+  const badgeColor = badgeColors[skill.length % badgeColors.length]
 
   return (
     <Card className="w-64 h-72 relative overflow-hidden border-2 border-primary/50 shadow-lg">
       {/* Badge Background Pattern */}
       <div className={`absolute inset-0 ${badgeColor} opacity-10`} />
-      <div className="absolute top-2 right-2">
-        <Badge variant="default" className="bg-primary text-primary-foreground gap-1">
-          <CheckCircle className="w-3 h-3" />
-          Verified
-        </Badge>
-      </div>
+      {(isVerified || credentialId) && (
+        <div className="absolute top-2 right-2">
+          <Badge variant="default" className="bg-primary text-primary-foreground gap-1">
+            <CheckCircle className="w-3 h-3" />
+            Verified
+          </Badge>
+        </div>
+      )}
 
       <CardHeader className="relative z-10 pb-2">
         <div className={`w-12 h-12 rounded-full ${badgeColor} flex items-center justify-center mb-2`}>
           <Award className="w-6 h-6 text-white" />
         </div>
-        <CardTitle className="text-sm font-bold text-balance leading-tight">{credentialData.skillName}</CardTitle>
-        <p className="text-xs text-muted-foreground">{credentialData.issuerName}</p>
+        <CardTitle className="text-sm font-bold text-balance leading-tight">{skill}</CardTitle>
+        <p className="text-xs text-muted-foreground">{issuerName}</p>
+        {skillLevel && (
+          <p className="text-xs text-muted-foreground capitalize">{skillLevel} Level</p>
+        )}
       </CardHeader>
 
       <CardContent className="relative z-10 pt-0">
         <div className="space-y-2">
           <p className="text-xs text-muted-foreground">
-            Issued: {new Date(credentialData.issueDate).toLocaleDateString()}
+            Issued: {new Date(issued).toLocaleDateString()}
           </p>
 
-          {credentialData.description && (
-            <p className="text-xs text-muted-foreground line-clamp-3">{credentialData.description}</p>
+          {desc && (
+            <p className="text-xs text-muted-foreground line-clamp-3">{desc}</p>
           )}
 
           {credentialId && (

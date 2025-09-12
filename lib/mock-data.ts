@@ -55,17 +55,46 @@ export const mockCredentials: Credential[] = [
 
 export const getCredentialsByAddress = (address: string): Credential[] => {
   // In a real app, this would fetch from blockchain/database
-  return mockCredentials
+  return getAllCredentials(address)
+}
+
+// Simulated storage for newly minted credentials
+let mintedCredentials: Credential[] = []
+
+// Function to add a new credential (called from mint page)
+export const addMintedCredential = (credential: Omit<Credential, 'id'>) => {
+  const newCredential: Credential = {
+    ...credential,
+    id: `MINT_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+  }
+  mintedCredentials.unshift(newCredential) // Add to beginning for recent order
+  return newCredential
+}
+
+// Get all credentials including minted ones
+export const getAllCredentials = (address: string): Credential[] => {
+  return [...mintedCredentials, ...mockCredentials]
+}
+
+// Get recent credentials (last 3-4)
+export const getRecentCredentials = (address: string, limit: number = 4): Credential[] => {
+  const allCredentials = getAllCredentials(address)
+  return allCredentials
+    .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
+    .slice(0, limit)
 }
 
 export const getCredentialStats = (credentials: Credential[]) => {
+  const now = new Date()
+  const thisMonth = credentials.filter((c) => {
+    const issueDate = new Date(c.issueDate)
+    return issueDate.getMonth() === now.getMonth() && issueDate.getFullYear() === now.getFullYear()
+  }).length
+
   return {
     total: credentials.length,
     verified: credentials.filter((c) => c.verified).length,
-    thisMonth: credentials.filter((c) => {
-      const issueDate = new Date(c.issueDate)
-      const now = new Date()
-      return issueDate.getMonth() === now.getMonth() && issueDate.getFullYear() === now.getFullYear()
-    }).length,
+    thisMonth,
+    skillAreas: new Set(credentials.map(c => c.skillName.split(' ')[0])).size, // Count unique skill areas
   }
 }

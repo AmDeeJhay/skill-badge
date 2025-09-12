@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { SkillPassportLogo } from "@/components/skill-passport-logo"
 import { WalletConnectionButton } from "@/components/wallet-connection-button"
 import { Button } from "@/components/ui/button"
-import { Home, User, Award, Plus } from "lucide-react"
+import { Home, User, Award, Plus, FileText } from "lucide-react"
 
 export function Navigation() {
   const pathname = usePathname()
@@ -13,6 +13,7 @@ export function Navigation() {
   const navItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/dashboard", label: "Dashboard", icon: Award },
+    { href: "/profile", label: "Credentials", icon: FileText },
     { href: "/profile", label: "Profile", icon: User },
   ]
 
