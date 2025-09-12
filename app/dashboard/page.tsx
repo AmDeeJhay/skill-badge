@@ -79,7 +79,7 @@ export default function DashboardPage() {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-blue-500 bg-clip-text text-transparent">
+                <h1 className="text-4xl font-bold">
                   Skill Passport
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
