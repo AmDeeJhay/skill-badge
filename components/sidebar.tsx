@@ -51,7 +51,7 @@ export function Sidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="relative flex flex-col h-full bg-white/95 backdrop-blur-xl border-r border-gray-200/50 shadow-xl">
+    <div className="relative flex flex-col h-full bg-white/95 backdrop-blur-xl border-1 border-r border-blue-300 shadow-xl">
       {/* Gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/5 pointer-events-none" />
       

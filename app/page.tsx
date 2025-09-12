@@ -81,6 +81,67 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* How It Works Section */}
+      <section className="py-24 px-6 bg-muted/20">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
+              How <span className="text-blue-500">It Works</span>
+            </h2>
+            <p className="text-bold text-gray-900 max-w-3xl mx-auto font-sm">
+              Create verifiable credentials in just three simple steps
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="group border-1 border-blue-300 hover:bg-blue-200 bg-white hover:from-muted/20 hover:to-muted/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:translate-y-[-4px]">
+              <CardHeader className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform">
+                  <span className="text-white text-2xl font-bold">1</span>
+                </div>
+                <CardTitle className="text-xl text-blue-500 font-semibold mb-3">Fill Credential Details</CardTitle>
+                <CardDescription className="text-muted-foreground leading-relaxed">
+                  Enter your skill name, issuer information, and other relevant details to create your digital credential.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group border-1 border-blue-300 hover:bg-blue-200 bg-white hover:from-muted/20 hover:to-muted/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:translate-y-[-4px]">
+              <CardHeader className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform">
+                  <span className="text-white text-2xl font-bold">2</span>
+                </div>
+                <CardTitle className="text-xl text-blue-500 font-semibold mb-3">Sign Transaction</CardTitle>
+                <CardDescription className="text-muted-foreground leading-relaxed">
+                  Confirm the transaction with your Polkadot wallet to authorize the credential creation on the blockchain.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group border-1 border-blue-300 hover:bg-blue-200 bg-white hover:from-muted/20 hover:to-muted/40 transition-all duration-300 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl hover:translate-y-[-4px]">
+              <CardHeader className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25 group-hover:scale-110 transition-transform">
+                  <span className="text-white text-2xl font-bold">3</span>
+                </div>
+                <CardTitle className="text-xl text-blue-500 font-semibold mb-3">Blockchain Verification</CardTitle>
+                <CardDescription className="text-muted-foreground leading-relaxed">
+                  Your credential is permanently stored and verified on-chain, creating an immutable proof of your skills.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+
+          <div className="text-center mt-12">
+            <Button size="lg" className="bg-blue-500 h-14 px-8 text-lg font-semibold rounded-xl" asChild>
+              <Link href="/mint">
+                Start Minting Now
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-24 px-6">
         <div className="container mx-auto max-w-7xl">
