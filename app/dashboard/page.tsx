@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { Poppins } from "next/font/google"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -84,7 +85,7 @@ export default function DashboardPage() {
                   Skill Badge
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-gray-900 text-sm font-mono">
+                  <span className="text-gray-600 text-sm font-mono">
                     {formatAddress(selectedAccount.address, 12)}
                   </span>
                   <button 
@@ -101,7 +102,7 @@ export default function DashboardPage() {
             <div className="flex gap-3">
               <Button 
               asChild
-              className="bg-blue-500 hover:bg-blue-700 text-white border-0 shadow-sm shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 font-semibold"
+              className="bg-blue-400 hover:bg-blue-500 text-white border-1 border-blue-300 shadow-sm shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 font-semibold"
             >
               <Link href="/mint">
                 <Plus className="w-4 h-4 mr-2" />
@@ -111,7 +112,7 @@ export default function DashboardPage() {
               <Button 
                 asChild
                 variant="outline" 
-                className="border-blue-500/50 hover:border-blue-400 text-blue-400 hover:text-blue-300 bg-white transition-all duration-300"
+                className="border-blue-500/50 hover:border-blue-400 text-blue-400 hover:text-blue-300 bg-white hover:bg-transparent hover:text-gray-500 transition-all duration-300"
               >
                 <Link href="/profile">
                   <Eye className="w-4 h-4 mr-2" />
@@ -123,7 +124,7 @@ export default function DashboardPage() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mb-10">
-            <GlowingCard glowColor="blue">
+            <GlowingCard glowColor="blue" className="shadow-sm hover:shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
@@ -136,7 +137,7 @@ export default function DashboardPage() {
               </CardContent>
             </GlowingCard>
 
-            <GlowingCard glowColor="blue">
+            <GlowingCard glowColor="blue" className="shadow-sm hover:shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
@@ -149,7 +150,7 @@ export default function DashboardPage() {
               </CardContent>
             </GlowingCard>
 
-            <GlowingCard glowColor="blue">
+            <GlowingCard glowColor="blue" className="shadow-sm hover:shadow-md">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-2">
                   <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
@@ -187,12 +188,12 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <GlowingCard className="p-12 text-center">
+              <GlowingCard className="p-12 text-center shadow-md hover:shadow-md">
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl mx-auto mb-6 flex items-center justify-center">
                   <Award className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-2">No Credentials Yet</h3>
-                <p className="text-gray-400 mb-6">Start building your decentralized skill passport by minting your first credential.</p>
+                <h3 className="text-lg font-semibold text-black mb-2">No Credentials Yet</h3>
+                <p className="text-gray-600 mb-6">Start building your decentralized skill passport by minting your first credential.</p>
                 <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 font-semibold" asChild>
                   <Link href="/mint">
                     <Plus className="w-4 h-4 mr-2" />
@@ -211,8 +212,8 @@ export default function DashboardPage() {
                   <Zap className="w-4 h-4 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-white">Quick Actions</CardTitle>
-                  <CardDescription className="text-gray-400">Fast-track your Web3 journey</CardDescription>
+                  <CardTitle className="text-black">Quick Actions</CardTitle>
+                  <CardDescription className="text-blue-500">Fast-track your badge journey</CardDescription>
                 </div>
               </div>
             </CardHeader>
@@ -221,7 +222,7 @@ export default function DashboardPage() {
                 <Button 
                   asChild
                   variant="outline" 
-                  className="justify-start h-auto p-4 bg-gray-900 border-blue-500/30 hover:border-blue-400/50 hover:bg-gray-800 text-left transition-all duration-300 group"
+                  className="justify-start h-auto p-4 bg-gray-700 border-blue-500/30 hover:border-blue-400/50 hover:bg-gray-800 text-left transition-all duration-300 group"
                 >
                   <Link href="/mint">
                     <div className="flex items-center gap-3">
@@ -239,7 +240,7 @@ export default function DashboardPage() {
                 <Button 
                   asChild
                   variant="outline" 
-                  className="justify-start h-auto p-4 bg-gray-900 border-blue-500/30 hover:border-blue-400/50 hover:bg-gray-800 text-left transition-all duration-300 group"
+                  className="justify-start h-auto p-4 bg-gray-700 border-blue-500/30 hover:border-blue-400/50 hover:bg-gray-800 text-left transition-all duration-300 group"
                 >
                   <Link href="/profile">
                     <div className="flex items-center gap-3">

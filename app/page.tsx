@@ -86,7 +86,7 @@ export default function LandingPage() {
         <div className="container mx-auto max-w-7xl">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 tracking-tight">
-              Why Choose <span className="text-blue-500">Skill Passport?</span>
+              Why Choose <span className="text-blue-500">Skill Badge?</span>
             </h2>
             <p className="text-bold text-gray-900 max-w-3xl mx-auto font-sm">
               Leverage Polkadot's cutting-edge technology to create verifiable credentials that matter

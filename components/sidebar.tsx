@@ -21,17 +21,18 @@ const routes = [
     color: "text-gray-500"
   },
   {
-    label: "Wallet",
-    icon: Wallet2,
-    href: "/wallet",
-    color: "text-gray-500"
-  },
-  {
     label: "Mint",
     icon: Plus,
     href: "/mint",
     color: "text-gray-500"
   },
+  {
+    label: "Wallet",
+    icon: Wallet2,
+    href: "/wallet",
+    color: "text-gray-500"
+  },
+
   {
     label: "Profile",
     icon: User,
