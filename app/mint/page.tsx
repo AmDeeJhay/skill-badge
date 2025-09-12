@@ -94,9 +94,9 @@ export default function MintPage() {
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid lg:grid-cols-2 gap-8">
               {/* Left Column - Credential Details and Additional Info */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-3 space-y-6">
                 {/* Credential Details Form - Full Width */}
                 <GlowingCard glowColor="blue" className="shadow-md bg-white">
                   <CardHeader className="pb-4">
