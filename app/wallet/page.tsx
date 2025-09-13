@@ -8,7 +8,7 @@ export default function WalletPage() {
   
   useEffect(() => {
     // Redirect to profile page (which now serves as credentials page)
-    router.replace("/profile")
+    router.replace("/credential")
   }, [router])
 
   return (

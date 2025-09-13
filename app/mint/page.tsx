@@ -647,14 +647,14 @@ export default function MintPage() {
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Left Column - Credential Form */}
               <div className="lg:col-span-2">
-                <GlowingCard glowColor="blue" className="shadow-md bg-white">
+                <GlowingCard glowColor="blue"  className="shadow-xs bg-white"> {/* card styles */}
                   <CardHeader className="pb-6">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                        <Award className="w-6 h-6 text-white" />
+                    <div className="flex itecms-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md shadow-blue-500/25">
+                        <Award className="w-6 h-6 text-white " />
                       </div>
                       <div>
-                        <CardTitle className="text-black text-2xl">Create Your Credential</CardTitle>
+                        <CardTitle className="text-black text-2xl -mt-1">Create Your Credential</CardTitle>
                         <CardDescription className="text-blue-600 text-base">Enter your skill information below</CardDescription>
                       </div>
                     </div>
