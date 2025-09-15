@@ -8,12 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { CredentialBadge } from "@/components/credential-badge"
 import { WalletStatusIndicator } from "@/components/wallet-status-indicator"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
-import { getCredentialsByAddress, getCredentialStats } from "@/lib/mock-data"
+import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service"
 import { Search, Share2, Filter, Award, Calendar, Shield, Copy } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 export default function ProfilePage() {
-  const { isConnected, selectedAccount, formatAddress } = usePolkadotWallet()
+  const { isConnected, selectedAccount, formatAddress, credentials, stats, isLoadingCredentials } = usePolkadotWallet()
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState("")
   const [filterBy, setFilterBy] = useState<"all" | "verified" | "recent">("all")
@@ -36,11 +36,12 @@ export default function ProfilePage() {
     )
   }
 
-  const credentials = getCredentialsByAddress(selectedAccount.address)
-  const stats = getCredentialStats(credentials)
+  // Use credentials from the wallet hook (which fetches from live API)
+  const userCredentials = credentials || []
+  const userStats = stats || { total: 0, verified: 0, thisMonth: 0, skillAreas: 0 }
 
   // Filter credentials based on search and filter
-  const filteredCredentials = credentials.filter((credential) => {
+  const filteredCredentials = userCredentials.filter((credential) => {
     const matchesSearch =
       credential.skillName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       credential.issuerName.toLowerCase().includes(searchQuery.toLowerCase())
@@ -112,8 +113,8 @@ export default function ProfilePage() {
                       <WalletStatusIndicator />
                     </div>
                     <div className="flex gap-4 text-sm text-muted-foreground">
-                      <span>{stats.total} Credentials</span>
-                      <span>{stats.verified} Verified</span>
+                      <span>{userStats.total} Credentials</span>
+                      <span>{userStats.verified} Verified</span>
                       <span>Member since 2024</span>
                     </div>
                   </div>
@@ -168,7 +169,7 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-foreground">Skill Credentials ({filteredCredentials.length})</h2>
             <Badge variant="secondary">
-              {stats.verified} of {stats.total} verified
+              {userStats.verified} of {userStats.total} verified
             </Badge>
           </div>
 
@@ -230,7 +231,7 @@ export default function ProfilePage() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Verified</span>
-                  <Badge className="bg-green-500 text-white">{stats.verified}</Badge>
+                  <Badge className="bg-green-500 text-white">{userStats.verified}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Pending</span>
@@ -238,7 +239,7 @@ export default function ProfilePage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Total</span>
-                  <Badge variant="outline">{stats.total}</Badge>
+                  <Badge variant="outline">{userStats.total}</Badge>
                 </div>
               </div>
             </CardContent>
@@ -255,15 +256,15 @@ export default function ProfilePage() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">This Month</span>
-                  <Badge variant="secondary">{stats.thisMonth}</Badge>
+                  <Badge variant="secondary">{userStats.thisMonth}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Last 30 Days</span>
-                  <Badge variant="secondary">{stats.thisMonth}</Badge>
+                  <Badge variant="secondary">{userStats.thisMonth}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">All Time</span>
-                  <Badge variant="outline">{stats.total}</Badge>
+                  <Badge variant="outline">{userStats.total}</Badge>
                 </div>
               </div>
             </CardContent>

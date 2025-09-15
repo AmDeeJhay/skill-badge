@@ -1,0 +1,133 @@
+// Prisma schema for the credential verification platform
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User management
+model User {
+  id          String   @id @default(cuid())
+  wallet      String   @unique
+  did         String   @unique
+  name        String?
+  bio         String?
+  avatarUrl   String?
+  links       Json?    // Social links array
+  isVerified  Boolean  @default(false)
+  reputation  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  credentials      Credential[]
+  verificationLogs VerificationLog[]
+  sessions         UserSession[]
+  
+  @@map("users")
+}
+
+// Credential storage with W3C VC compliance
+model Credential {
+  id              String           @id @default(cuid())
+  userId          String
+  vcId            String           @unique  // W3C VC ID
+  skill           String
+  organization    String
+  issuer          String
+  issuanceDate    DateTime
+  expirationDate  DateTime?
+  proof           Json             // W3C VC proof object
+  status          CredentialStatus @default(VALID)
+  metadata        Json?            // Additional issuer-specific data
+  revokedReason   String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verificationLogs VerificationLog[]
+  
+  @@map("credentials")
+}
+
+// Audit trail for verification attempts
+model VerificationLog {
+  id           String             @id @default(cuid())
+  userId       String
+  credentialId String?
+  source       String             // GitHub, Coursera, AWS, etc.
+  skill        String
+  result       Json               // Detailed verification response
+  status       VerificationStatus
+  timestamp    DateTime           @default(now())
+  
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  credential Credential? @relation(fields: [credentialId], references: [id], onDelete: SetNull)
+  
+  @@map("verification_logs")
+}
+
+// Session management
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("user_sessions")
+}
+
+// Issuer schema definitions
+model IssuerSchema {
+  id             String   @id @default(cuid())
+  issuerName     String   @unique
+  requiredFields Json     // Schema definition
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@map("issuer_schemas")
+}
+
+// File uploads for evidence
+model FileUpload {
+  id          String   @id @default(cuid())
+  userId      String
+  fileName    String
+  filePath    String
+  fileSize    Int
+  mimeType    String
+  uploadedAt  DateTime @default(now())
+  
+  @@map("file_uploads")
+}
+
+// Analytics and metrics
+model Analytics {
+  id        String   @id @default(cuid())
+  metric    String
+  value     Float
+  metadata  Json?
+  timestamp DateTime @default(now())
+  
+  @@map("analytics")
+}
+
+enum CredentialStatus {
+  VALID
+  EXPIRED
+  REVOKED
+  PENDING
+}
+
+enum VerificationStatus {
+  SUCCESS
+  FAILED
+  PENDING
+  ERROR
+}

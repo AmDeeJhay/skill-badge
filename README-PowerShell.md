@@ -1,4 +1,4 @@
-# Skill Badge - W3C Verifiable Credentials Platform
+# Skill Badge - W3C Verifiable Credentials Platform (Windows PowerShell)
 
 A comprehensive platform for issuing, managing, and verifying W3C-compliant verifiable credentials with blockchain integration and external API verification.
 
@@ -27,28 +27,38 @@ A comprehensive platform for issuing, managing, and verifying W3C-compliant veri
 - **Credential Types**: SkillCredential and ExperienceCredential
 - **Lifecycle Management**: Issuance, verification, expiration, revocation
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Windows PowerShell)
 
 ### Prerequisites
 - Node.js 18+
 - npm or yarn
 - Git
+- Windows PowerShell 5.1+ or PowerShell Core 7+
 
 ### Installation
 
 1. **Clone the repository**
-   ```bash
+   ```powershell
    git clone <repository-url>
    cd skill-badge
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm run setup
+2. **Quick setup (PowerShell)**
+   ```powershell
+   # Option 1: Use PowerShell setup script
+   npm run setup:ps1
+   
+   # Option 2: Manual setup
+   npm install
+   npm run backend:setup:ps1
    ```
 
 3. **Start development servers**
-   ```bash
+   ```powershell
+   # Option 1: Use PowerShell startup script
+   npm run start:ps1
+   
+   # Option 2: Manual startup
    npm run dev:full
    ```
 
@@ -56,21 +66,21 @@ This will start:
 - Frontend: `http://localhost:3000`
 - Backend: `http://localhost:3001`
 
-### Manual Setup
+### Manual Setup (PowerShell)
 
 If you prefer to set up manually:
 
 1. **Frontend setup**
-   ```bash
+   ```powershell
    npm install
    npm run dev
    ```
 
 2. **Backend setup**
-   ```bash
+   ```powershell
    cd backend
    npm install
-   cp env.example .env
+   Copy-Item env.example .env
    npm run db:generate
    npm run db:push
    npm run db:seed
@@ -106,6 +116,8 @@ skill-badge/
 │   │   └── ...
 │   ├── prisma/           # Database schema
 │   └── ...
+├── start.ps1             # PowerShell startup script
+├── test-backend.ps1      # PowerShell test script
 └── docs/                 # Documentation
 ```
 
@@ -215,12 +227,16 @@ await backendIntegration.createW3CCredential(userId, credentialData);
 await backendIntegration.verifyCredentialWithExternalSources(credentialId, externalVerification);
 ```
 
-## 🧪 Testing
+## 🧪 Testing (PowerShell)
 
 ### Backend API Testing
 
-```bash
-npm run backend:test
+```powershell
+# PowerShell test script
+npm run backend:test:ps1
+
+# Or run directly
+powershell -ExecutionPolicy Bypass -File test-backend.ps1
 ```
 
 This runs comprehensive tests for:
@@ -232,7 +248,7 @@ This runs comprehensive tests for:
 
 ### Manual Testing
 
-1. **Start both servers**: `npm run dev:full`
+1. **Start both servers**: `npm run start:ps1`
 2. **Navigate to**: `http://localhost:3000/mint-enhanced`
 3. **Test credential creation** with sample data
 4. **Test verification** in the verification tab
@@ -249,7 +265,7 @@ This runs comprehensive tests for:
 - **Frontend**: Browser console and network tab
 
 ### Database
-```bash
+```powershell
 cd backend
 npm run db:studio
 ```
@@ -275,13 +291,13 @@ npm run db:studio
 ## 🚀 Deployment
 
 ### Frontend (Vercel)
-```bash
+```powershell
 npm run build
 # Deploy to Vercel
 ```
 
 ### Backend (Docker)
-```bash
+```powershell
 cd backend
 docker build -t skill-badge-backend .
 docker run -p 3001:3001 skill-badge-backend

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import type { InjectedAccountWithMeta, InjectedExtension, WalletState } from "@/lib/types"
-import { getCredentialsByAddress, getCredentialStats } from "@/lib/mock-data"
+import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service"
 
 declare global {
   interface Window {
@@ -45,6 +45,31 @@ export function usePolkadotWallet() {
     extension: null,
     error: null,
   })
+  
+  const [credentials, setCredentials] = useState<any[]>([])
+  const [stats, setStats] = useState<any>(null)
+  const [isLoadingCredentials, setIsLoadingCredentials] = useState(false)
+
+  // Load credentials function - defined early to avoid circular dependencies
+  const loadCredentials = useCallback(async (address: string) => {
+    if (!address) return
+    
+    console.log('Loading credentials for address:', address)
+    setIsLoadingCredentials(true)
+    try {
+      const userCredentials = await getCredentialsByAddress(address)
+      console.log('Loaded credentials:', userCredentials)
+      setCredentials(userCredentials || [])
+      setStats(getCredentialStats(userCredentials || []))
+    } catch (error) {
+      console.error('Failed to load credentials:', error)
+      // Fallback to empty arrays if API fails
+      setCredentials([])
+      setStats({ total: 0, verified: 0, thisMonth: 0, skillAreas: 0 })
+    } finally {
+      setIsLoadingCredentials(false)
+    }
+  }, [])
 
   const getAvailableWallets = useCallback(() => {
     if (typeof window === "undefined") return []
@@ -100,6 +125,9 @@ export function usePolkadotWallet() {
         localStorage.setItem("polkadot-wallet-connected", "true")
         localStorage.setItem("polkadot-selected-account", accounts[0].address)
         localStorage.setItem("polkadot-selected-wallet", selectedWallet.key)
+        
+        // Load credentials for the connected account
+        loadCredentials(accounts[0].address)
       } catch (error) {
         console.error("Failed to connect wallet:", error)
         setWalletState((prev) => ({
@@ -109,7 +137,7 @@ export function usePolkadotWallet() {
         }))
       }
     },
-    [getAvailableWallets],
+    [getAvailableWallets, loadCredentials],
   )
 
   const disconnectWallet = useCallback(() => {
@@ -126,15 +154,16 @@ export function usePolkadotWallet() {
     localStorage.removeItem("polkadot-selected-wallet")
   }, [])
 
-  const selectAccount = useCallback((account: InjectedAccountWithMeta) => {
-    setWalletState((prev) => ({ ...prev, selectedAccount: account }))
-    localStorage.setItem("polkadot-selected-account", account.address)
-  }, [])
-
   const formatAddress = useCallback((address: string, length = 8) => {
     if (!address) return ""
     return `${address.slice(0, length)}...${address.slice(-length)}`
   }, [])
+
+  const selectAccount = useCallback((account: InjectedAccountWithMeta) => {
+    setWalletState((prev) => ({ ...prev, selectedAccount: account }))
+    localStorage.setItem("polkadot-selected-account", account.address)
+    loadCredentials(account.address)
+  }, [loadCredentials])
 
   useEffect(() => {
     const restoreConnection = async () => {
@@ -166,6 +195,9 @@ export function usePolkadotWallet() {
                 selectedAccount,
                 error: null,
               })
+              
+              // Load credentials for the restored account
+              loadCredentials(selectedAccount.address)
             }
           } catch (error) {
             console.error("Failed to restore wallet connection:", error)
@@ -178,11 +210,14 @@ export function usePolkadotWallet() {
     }
 
     restoreConnection()
-  }, [getAvailableWallets])
+  }, [getAvailableWallets, loadCredentials])
 
-  // Get credentials for the selected account
-  const credentials = walletState.selectedAccount ? getCredentialsByAddress(walletState.selectedAccount.address) : []
-  const stats = getCredentialStats(credentials)
+  // Load credentials when selected account changes
+  useEffect(() => {
+    if (walletState.selectedAccount?.address) {
+      loadCredentials(walletState.selectedAccount.address)
+    }
+  }, [walletState.selectedAccount?.address, loadCredentials])
 
   return {
     ...walletState,
@@ -195,5 +230,7 @@ export function usePolkadotWallet() {
     isExtensionAvailable: isExtensionAvailable(),
     credentials,
     stats,
+    isLoadingCredentials,
+    loadCredentials,
   }
 }

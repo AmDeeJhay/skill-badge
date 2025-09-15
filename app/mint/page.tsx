@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { addMintedCredential } from "@/lib/mock-data"
+import { addMintedCredential } from "@/lib/data-service"
 import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Zap, Globe, Copy, TrendingUp, AlertTriangle, ArrowRight, X, Search, Calendar, Building, Code, GraduationCap, Briefcase, Link as LinkIcon } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -491,55 +491,74 @@ export default function MintPage() {
   const handleNoticeAgree = async () => {
     setShowNoticeModal(false)
     
-    // API Integration for supported organizations
-    if (formData.issuerOrganization?.hasAPI) {
-      try {
-        // This is where backend engineers will integrate with various APIs
-        const apiEndpoint = getAPIEndpoint(formData.issuerOrganization.name)
-        const verificationData = await verifyCredentialWithAPI({
-          organization: formData.issuerOrganization.name,
-          skillName: formData.skillName,
+    try {
+      // Create credential using live API
+      const credentialData = {
+        skill: formData.skillName,
+        organization: formData.issuerOrganization?.name || "Unknown Issuer",
+        issuer: "did:polkadot:issuer", // This would be the actual issuer DID
+        expirationDate: formData.expiryDate || undefined,
+        metadata: {
+          description: formData.description,
           evidenceUrl: formData.evidenceUrl,
-          // Add other relevant data for API verification
-        })
-        
-        if (!verificationData.isValid) {
-          toast({
-            title: "Verification Failed",
-            description: "Could not verify credential with the issuing organization",
-            variant: "destructive"
-          })
-          return
+          skillLevel: formData.skillLevel,
+          credentialType: formData.credentialType,
+          hasAPI: formData.issuerOrganization?.hasAPI || false,
         }
-      } catch (error) {
-        console.error('API verification failed:', error)
-        // Continue with manual verification
       }
-    }
-    
-    // Simulate minting process
-    setTimeout(() => {
-      const credentialId = "CRED_" + Math.random().toString(36).substr(2, 9)
-      const transactionHash = "0x" + Math.random().toString(16).substr(2, 64)
       
-      // Add to mock data storage
-      const newCredential = addMintedCredential({
-        skillName: formData.skillName,
-        issuerName: formData.issuerOrganization?.name || "Unknown Issuer",
-        issueDate: formData.issueDate || new Date().toISOString().split('T')[0],
-        description: formData.description,
-        badgeColor: `bg-${['blue', 'purple', 'green', 'pink', 'orange', 'cyan'][Math.floor(Math.random() * 6)]}-500`,
-        verified: formData.issuerOrganization?.hasAPI || false,
-        transactionHash
+      // API Integration for supported organizations
+      if (formData.issuerOrganization?.hasAPI) {
+        try {
+          // This is where backend engineers will integrate with various APIs
+          const apiEndpoint = getAPIEndpoint(formData.issuerOrganization.name)
+          const verificationData = await verifyCredentialWithAPI({
+            organization: formData.issuerOrganization.name,
+            skillName: formData.skillName,
+            evidenceUrl: formData.evidenceUrl,
+            // Add other relevant data for API verification
+          })
+          
+          if (!verificationData.isValid) {
+            toast({
+              title: "Verification Failed",
+              description: "Could not verify credential with the issuing organization",
+              variant: "destructive"
+            })
+            return
+          }
+        } catch (error) {
+          console.error('API verification failed:', error)
+          // Continue with manual verification
+        }
+      }
+      
+      // Create credential using live API
+      const newCredential = await addMintedCredential(credentialData)
+      
+      if (newCredential) {
+        const mockCredential = {
+          credentialId: newCredential.id,
+          transactionHash: newCredential.vcId
+        }
+        setMintedCredential(mockCredential)
+        setShowSuccessModal(true)
+        
+        toast({
+          title: "Credential Created",
+          description: "Your skill credential has been successfully created",
+        })
+      } else {
+        throw new Error("Failed to create credential")
+      }
+    } catch (error) {
+      console.error('Failed to create credential:', error)
+      toast({
+        title: "Creation Failed",
+        description: "Failed to create credential. Please try again.",
+        variant: "destructive"
       })
-      
-      const mockCredential = {
-        credentialId,
-        transactionHash
-      }
-      setMintedCredential(mockCredential)
-      setShowSuccessModal(true)
-    }, 1000)
+    }
   }
 
   // Helper function for API endpoint mapping (for backend integration)
@@ -655,16 +674,16 @@ export default function MintPage() {
                       </div>
                       <div>
                         <CardTitle className="text-black text-2xl -mt-1">Create Your Credential</CardTitle>
-                        <CardDescription className="text-blue-600 text-base">Enter your skill information below</CardDescription>
+                        <CardDescription className="text-blue-600 text-md">Enter your skill information below</CardDescription>
                       </div>
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="space-y-8">
                       {/* Skill Selection */}
-                      <div className="grid md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <label className="text-sm font-medium text-gray-800 flex items-center gap-1">
                             <Code className="w-4 h-4" />
                             Skill Name *
                           </label>
@@ -676,6 +695,7 @@ export default function MintPage() {
                             allowCustom={true}
                             onCustomValue={(value) => updateFormData("skillName", value)}
                             icon={<Code className="w-4 h-4" />}
+                            
                           />
                         </div>
 

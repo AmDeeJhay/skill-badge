@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import type { Credential } from "@/lib/mock-data"
+import type { Credential } from "@/lib/data-service"
 import { CheckCircle, Share2, ExternalLink, Copy, Download, Calendar, User, Award, Shield, Hash } from "lucide-react"
 
 interface CredentialDetailModalProps {

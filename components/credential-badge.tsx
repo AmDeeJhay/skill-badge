@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { CredentialDetailModal } from "@/components/credential-detail-modal"
 import { CheckCircle, ExternalLink, Share2, Eye } from "lucide-react"
-import type { Credential } from "@/lib/mock-data"
+import type { Credential } from "@/lib/data-service"
 import Link from "next/link"
 
 interface CredentialBadgeProps {

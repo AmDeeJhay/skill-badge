@@ -1,13 +1,14 @@
 "use client"
 
 import { useParams } from "next/navigation"
+import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import { mockCredentials } from "@/lib/mock-data"
+import { dataService } from "@/lib/data-service"
 import {
   CheckCircle,
   Share2,
@@ -21,6 +22,7 @@ import {
   Hash,
   ArrowLeft,
   AlertCircle,
+  Loader2,
 } from "lucide-react"
 import Link from "next/link"
 
@@ -28,9 +30,30 @@ export default function CredentialPage() {
   const params = useParams()
   const { toast } = useToast()
   const credentialId = params.id as string
+  const [credential, setCredential] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Find the credential by ID
-  const credential = mockCredentials.find((c) => c.id === credentialId)
+  useEffect(() => {
+    const fetchCredential = async () => {
+      try {
+        const cred = await dataService.getCredential(credentialId)
+        setCredential(cred)
+      } catch (error) {
+        console.error('Failed to fetch credential:', error)
+        toast({
+          title: "Error",
+          description: "Failed to load credential details",
+          variant: "destructive"
+        })
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    if (credentialId) {
+      fetchCredential()
+    }
+  }, [credentialId, toast])
 
   const handleShare = async () => {
     const shareUrl = window.location.href
@@ -97,6 +120,22 @@ export default function CredentialPage() {
       title: "Download started",
       description: "Credential data has been downloaded as JSON",
     })
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center max-w-md mx-auto">
+            <Loader2 className="w-16 h-16 text-muted-foreground mx-auto mb-6 animate-spin" />
+            <h1 className="text-2xl font-bold text-foreground mb-4">Loading Credential</h1>
+            <p className="text-muted-foreground mb-6">
+              Please wait while we fetch the credential details...
+            </p>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!credential) {
