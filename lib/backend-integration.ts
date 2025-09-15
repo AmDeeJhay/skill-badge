@@ -1,7 +1,7 @@
 // Frontend integration utilities for connecting to the backend
 
 // API client for backend communication
-export class ApiClient {
+class ApiClient {
   private baseUrl: string;
   private apiKey: string;
 

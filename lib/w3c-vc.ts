@@ -145,6 +145,9 @@ export class CredentialIssuer {
       ...skillData
     }
 
+    // Generate proof first before creating credential
+    const proofValue = await this.generateProof(credentialId, issuerDID, issuanceDate)
+
     const credential: VerifiableCredential = {
       '@context': [
         'https://www.w3.org/2018/credentials/v1',
@@ -166,7 +169,7 @@ export class CredentialIssuer {
         created: issuanceDate,
         verificationMethod: `${issuerDID}#key-1`,
         proofPurpose: 'assertionMethod',
-        proofValue: await this.generateProof(credential, issuerDID)
+        proofValue
       }
     }
 
@@ -187,6 +190,9 @@ export class CredentialIssuer {
       type: ['ExperienceCredential'],
       ...experienceData
     }
+
+    // Generate proof first before creating credential
+    const proofValue = await this.generateProof(credentialId, issuerDID, issuanceDate)
 
     const credential: VerifiableCredential = {
       '@context': [
@@ -209,20 +215,20 @@ export class CredentialIssuer {
         created: issuanceDate,
         verificationMethod: `${issuerDID}#key-1`,
         proofPurpose: 'assertionMethod',
-        proofValue: await this.generateProof(credential, issuerDID)
+        proofValue
       }
     }
 
     return credential
   }
 
-  private async generateProof(credential: VerifiableCredential, issuerDID: string): Promise<string> {
+  private async generateProof(credentialId: string, issuerDID: string, issuanceDate: string): Promise<string> {
     // In a real implementation, this would generate a cryptographic signature
     // For now, we'll create a mock proof value
     const proofData = JSON.stringify({
-      credential: credential.id,
+      credential: credentialId,
       issuer: issuerDID,
-      timestamp: credential.issuanceDate
+      timestamp: issuanceDate
     })
     
     // Mock signature generation

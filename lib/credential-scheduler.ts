@@ -5,6 +5,7 @@ import { credentialManager } from '@/lib/w3c-vc'
 export class CredentialExpirationChecker {
   private static instance: CredentialExpirationChecker
   private isRunning = false
+  private cronTask: cron.ScheduledTask | null = null
 
   static getInstance(): CredentialExpirationChecker {
     if (!CredentialExpirationChecker.instance) {
@@ -20,7 +21,7 @@ export class CredentialExpirationChecker {
     }
 
     // Run daily at midnight
-    cron.schedule('0 0 * * *', async () => {
+    this.cronTask = cron.schedule('0 0 * * *', async () => {
       console.log('Running daily credential expiration check...')
       await this.checkExpiredCredentials()
     })
@@ -33,7 +34,11 @@ export class CredentialExpirationChecker {
   }
 
   stop(): void {
-    cron.destroy()
+    if (this.cronTask) {
+      this.cronTask.stop()
+      this.cronTask.destroy()
+      this.cronTask = null
+    }
     this.isRunning = false
     console.log('Credential expiration checker stopped')
   }
@@ -66,6 +71,14 @@ export class CredentialExpirationChecker {
   // Manual trigger for testing
   async triggerCheck(): Promise<string[]> {
     return await credentialManager.checkExpiredCredentials()
+  }
+
+  // Get current status
+  getStatus(): { isRunning: boolean; hasTask: boolean } {
+    return {
+      isRunning: this.isRunning,
+      hasTask: this.cronTask !== null
+    }
   }
 }
 

@@ -26,6 +26,12 @@ export interface GitHubRepository {
   created_at: string
   updated_at: string
   pushed_at: string
+  owner: {
+    login: string
+    id: number
+    avatar_url: string
+    html_url: string
+  }
 }
 
 export interface GitHubCommit {
@@ -67,6 +73,13 @@ export interface VerificationResult {
   evidence: any
   errors: string[]
   warnings: string[]
+}
+
+export interface SkillEvidence {
+  repositoriesWithSkill: GitHubRepository[]
+  totalCommits: number
+  languagesUsed: Set<string>
+  skillMentions: number
 }
 
 // GitHub API Integration
@@ -182,8 +195,8 @@ export class GitHubIntegration {
   private async analyzeSkillInRepositories(
     repositories: GitHubRepository[], 
     skillName: string
-  ): Promise<any> {
-    const skillEvidence = {
+  ): Promise<SkillEvidence> {
+    const skillEvidence: SkillEvidence = {
       repositoriesWithSkill: [],
       totalCommits: 0,
       languagesUsed: new Set<string>(),
@@ -214,7 +227,7 @@ export class GitHubIntegration {
     return skillEvidence
   }
 
-  private calculateSkillConfidence(skillEvidence: any, totalRepos: number): number {
+  private calculateSkillConfidence(skillEvidence: SkillEvidence, totalRepos: number): number {
     let confidence = 0
 
     // Repository evidence (40% weight)
@@ -328,9 +341,9 @@ export class VerificationServiceManager {
   }
 
   async verifySkillWithMultipleSources(
+    skillName: string,
     githubUsername?: string,
-    linkedinProfileId?: string,
-    skillName: string
+    linkedinProfileId?: string
   ): Promise<{
     github?: VerificationResult
     linkedin?: VerificationResult

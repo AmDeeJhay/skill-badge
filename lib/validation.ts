@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z, ZodError } from "zod"
 
 export const credentialSchema = z.object({
   skillName: z
@@ -77,9 +77,9 @@ export const validateCredentialForm = (data: CredentialFormData) => {
     credentialSchema.parse(data)
     return { success: true, errors: {} }
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof ZodError) {
       const errors: Record<string, string> = {}
-      error.errors.forEach((err) => {
+      error.issues.forEach((err: z.ZodIssue) => {
         if (err.path[0]) {
           errors[err.path[0] as string] = err.message
         }
@@ -95,9 +95,9 @@ export const validateCredentialIssue = (data: CredentialIssueData) => {
     credentialIssueSchema.parse(data)
     return { success: true, errors: {} }
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof ZodError) {
       const errors: Record<string, string> = {}
-      error.errors.forEach((err) => {
+      error.issues.forEach((err: z.ZodIssue) => {
         if (err.path[0]) {
           errors[err.path[0] as string] = err.message
         }
@@ -113,9 +113,9 @@ export const validateCredentialVerify = (data: CredentialVerifyData) => {
     credentialVerifySchema.parse(data)
     return { success: true, errors: {} }
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    if (error instanceof ZodError) {
       const errors: Record<string, string> = {}
-      error.errors.forEach((err) => {
+      error.issues.forEach((err: z.ZodIssue) => {
         if (err.path[0]) {
           errors[err.path[0] as string] = err.message
         }

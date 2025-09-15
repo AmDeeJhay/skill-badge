@@ -46,6 +46,37 @@ export interface ApiUserStats {
   isVerified: boolean;
 }
 
+// API Response wrapper types
+interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+  message?: string;
+}
+
+interface ApiCredentialResponse {
+  data: ApiCredential;
+  success: boolean;
+  message?: string;
+}
+
+interface ApiCredentialsResponse {
+  data: ApiCredential[];
+  success: boolean;
+  message?: string;
+}
+
+interface ApiUserResponse {
+  data: ApiUser;
+  success: boolean;
+  message?: string;
+}
+
+interface ApiUserStatsResponse {
+  data: ApiUserStats;
+  success: boolean;
+  message?: string;
+}
+
 // Convert API credential to frontend credential format
 export const convertApiCredentialToFrontend = (apiCred: ApiCredential) => ({
   id: apiCred.id,
@@ -83,7 +114,7 @@ export const dataService = {
   // User management
   async getUser(wallet: string): Promise<ApiUser | null> {
     try {
-      const response = await apiClient.getUser(wallet);
+      const response = await apiClient.getUser(wallet) as ApiUserResponse;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch user:', error);
@@ -100,7 +131,7 @@ export const dataService = {
     links?: any;
   }): Promise<ApiUser | null> {
     try {
-      const response = await apiClient.createUser(userData);
+      const response = await apiClient.createUser(userData) as ApiUserResponse;
       return response.data;
     } catch (error) {
       console.error('Failed to create/update user:', error);
@@ -110,7 +141,7 @@ export const dataService = {
 
   async getUserStats(wallet: string): Promise<ApiUserStats | null> {
     try {
-      const response = await apiClient.getUserStats(wallet);
+      const response = await apiClient.getUserStats(wallet) as ApiUserStatsResponse;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch user stats:', error);
@@ -121,7 +152,7 @@ export const dataService = {
   // Credential management
   async getUserCredentials(wallet: string): Promise<any[]> {
     try {
-      const response = await apiClient.getUserCredentials(wallet);
+      const response = await apiClient.getUserCredentials(wallet) as ApiCredentialsResponse;
       return response.data.map(convertApiCredentialToFrontend);
     } catch (error) {
       console.error('Failed to fetch user credentials:', error);
@@ -131,7 +162,7 @@ export const dataService = {
 
   async getCredential(id: string): Promise<any | null> {
     try {
-      const response = await apiClient.getCredential(id);
+      const response = await apiClient.getCredential(id) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
     } catch (error) {
       console.error('Failed to fetch credential:', error);
@@ -147,7 +178,7 @@ export const dataService = {
     metadata?: any;
   }, token?: string): Promise<any | null> {
     try {
-      const response = await apiClient.createCredential(credentialData, token);
+      const response = await apiClient.createCredential(credentialData, token) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
     } catch (error) {
       console.error('Failed to create credential:', error);
@@ -157,7 +188,7 @@ export const dataService = {
 
   async updateCredential(id: string, credentialData: any, token?: string): Promise<any | null> {
     try {
-      const response = await apiClient.updateCredential(id, credentialData, token);
+      const response = await apiClient.updateCredential(id, credentialData, token) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
     } catch (error) {
       console.error('Failed to update credential:', error);
@@ -187,7 +218,7 @@ export const dataService = {
 
   async getCredentialStatus(id: string): Promise<string | null> {
     try {
-      const response = await apiClient.getCredentialStatus(id);
+      const response = await apiClient.getCredentialStatus(id) as ApiResponse<{ status: string }>;
       return response.data.status;
     } catch (error) {
       console.error('Failed to fetch credential status:', error);
@@ -204,7 +235,7 @@ export const dataService = {
     };
   }, token?: string): Promise<any | null> {
     try {
-      const response = await apiClient.verifyCredential(verificationData, token);
+      const response = await apiClient.verifyCredential(verificationData, token) as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to verify credential:', error);
@@ -214,7 +245,7 @@ export const dataService = {
 
   async verifyGitHubSkill(username: string, skill: string): Promise<any | null> {
     try {
-      const response = await apiClient.verifyGitHubSkill(username, skill);
+      const response = await apiClient.verifyGitHubSkill(username, skill) as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to verify GitHub skill:', error);
@@ -228,7 +259,7 @@ export const dataService = {
     linkedinProfileId?: string;
   }, token?: string): Promise<any | null> {
     try {
-      const response = await apiClient.verifyMultiSource(verificationData, token);
+      const response = await apiClient.verifyMultiSource(verificationData, token) as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to perform multi-source verification:', error);
@@ -239,7 +270,7 @@ export const dataService = {
   // Analytics
   async getOverviewStats(): Promise<any | null> {
     try {
-      const response = await apiClient.getOverviewStats();
+      const response = await apiClient.getOverviewStats() as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch overview stats:', error);
@@ -249,7 +280,7 @@ export const dataService = {
 
   async getTrendingSkills(limit = 20): Promise<any[] | null> {
     try {
-      const response = await apiClient.getTrendingSkills(limit);
+      const response = await apiClient.getTrendingSkills(limit) as ApiResponse<any[]>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch trending skills:', error);
@@ -259,7 +290,7 @@ export const dataService = {
 
   async getVerificationStats(): Promise<any | null> {
     try {
-      const response = await apiClient.getVerificationStats();
+      const response = await apiClient.getVerificationStats() as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch verification stats:', error);
@@ -269,7 +300,7 @@ export const dataService = {
 
   async getUserGrowth(period = '30d'): Promise<any | null> {
     try {
-      const response = await apiClient.getUserGrowth(period);
+      const response = await apiClient.getUserGrowth(period) as ApiResponse<any>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch user growth:', error);
