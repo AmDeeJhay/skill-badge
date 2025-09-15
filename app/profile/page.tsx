@@ -12,8 +12,21 @@ import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service"
 import { Search, Share2, Filter, Award, Calendar, Shield, Copy, ExternalLink, TrendingUp, Users, Globe, Zap } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
-function GlowingCard({ children, className = "", glowColor = "blue" as const }) {
-  const glowClasses = {
+// Type definitions
+type GlowColor = "blue" | "black" | "indigo" | "green" | "purple";
+
+interface GlowingCardProps {
+  children: React.ReactNode;
+  className?: string;
+  glowColor?: GlowColor;
+}
+
+type GlowClasses = {
+  [K in GlowColor]: string;
+};
+
+function GlowingCard({ children, className = "", glowColor = "blue" }: GlowingCardProps) {
+  const glowClasses: GlowClasses = {
     blue: "shadow-blue-500/20 hover:shadow-blue-500/40 border-blue-500/20 hover:border-blue-500/40",
     black: "shadow-black/20 hover:shadow-black/40 border-gray-800 hover:border-gray-700",
     indigo: "shadow-indigo-500/20 hover:shadow-indigo-500/40 border-indigo-500/20 hover:border-indigo-500/40",

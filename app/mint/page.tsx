@@ -11,6 +11,63 @@ import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Zap, Globe
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
+// Type definitions
+interface Organization {
+  name: string;
+  hasAPI: boolean;
+  type: string;
+  category?: string;
+}
+
+interface FormData {
+  skillName: string;
+  issuerOrganization: Organization | null;
+  skillLevel: string;
+  issueDate: string;
+  expiryDate: string;
+  description: string;
+  evidenceUrl: string;
+  credentialType: string;
+}
+
+interface MintedCredential {
+  credentialId: string;
+  transactionHash: string;
+}
+
+interface SearchableSelectProps {
+  options: string[];
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  allowCustom?: boolean;
+  onCustomValue?: ((value: string) => void) | null;
+  icon?: React.ReactNode;
+}
+
+interface OrganizationSelectProps {
+  value: Organization | null;
+  onChange: (org: Organization) => void;
+}
+
+interface GlowingCardProps {
+  children: React.ReactNode;
+  className?: string;
+  glowColor?: "blue" | "green" | "indigo" | "orange";
+}
+
+interface ImportantNoticeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onAgree: () => void;
+}
+
+interface SuccessModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onViewCredential: () => void;
+}
+
 // Data for skills and organizations
 const SKILL_CATEGORIES = [
   {
@@ -101,7 +158,7 @@ const ORGANIZATIONS = [
   }
 ]
 
-function GlowingCard({ children, className = "", glowColor = "blue" as const }) {
+function GlowingCard({ children, className = "", glowColor = "blue" }: GlowingCardProps) {
   const glowClasses = {
     blue: "shadow-blue-500/20 hover:shadow-blue-500/40 border-blue-500/20 hover:border-blue-500/40",
     green: "shadow-green-500/20 hover:shadow-green-500/40 border-green-500/20 hover:border-green-500/40",
@@ -124,16 +181,16 @@ function SearchableSelect({
   allowCustom = false,
   onCustomValue = null,
   icon = null
-}) {
+}: SearchableSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [customValue, setCustomValue] = useState("")
 
-  const filteredOptions = options.filter(option => 
+  const filteredOptions = options.filter((option: string) => 
     option.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleSelect = (option) => {
+  const handleSelect = (option: string) => {
     onChange(option)
     setIsOpen(false)
     setSearchTerm("")
@@ -174,7 +231,7 @@ function SearchableSelect({
           </div>
           
           <div className="max-h-40 overflow-y-auto">
-            {filteredOptions.map((option, index) => (
+            {filteredOptions.map((option: string, index: number) => (
               <div
                 key={index}
                 className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-700 hover:text-blue-600 transition-colors"
@@ -216,7 +273,7 @@ function SearchableSelect({
 }
 
 // Organization Select Component
-function OrganizationSelect({ value, onChange }) {
+function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [customValue, setCustomValue] = useState("")
@@ -228,12 +285,12 @@ function OrganizationSelect({ value, onChange }) {
     }))
   )
 
-  const filteredOrganizations = allOrganizations.filter(org => 
+  const filteredOrganizations = allOrganizations.filter((org: Organization) => 
     org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    org.category.toLowerCase().includes(searchTerm.toLowerCase())
+    (org.category && org.category.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const handleSelect = (org) => {
+  const handleSelect = (org: Organization) => {
     onChange(org)
     setIsOpen(false)
     setSearchTerm("")
@@ -288,7 +345,7 @@ function OrganizationSelect({ value, onChange }) {
           
           <div className="max-h-60 overflow-y-auto">
             {ORGANIZATIONS.map((category) => {
-              const categoryOrgs = category.organizations.filter(org => 
+              const categoryOrgs = category.organizations.filter((org: Organization) => 
                 org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 category.category.toLowerCase().includes(searchTerm.toLowerCase())
               )
@@ -300,7 +357,7 @@ function OrganizationSelect({ value, onChange }) {
                   <div className="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wide">
                     {category.category}
                   </div>
-                  {categoryOrgs.map((org, index) => (
+                  {categoryOrgs.map((org: Organization, index: number) => (
                     <div
                       key={index}
                       className="px-4 py-3 hover:bg-blue-50 cursor-pointer border-b border-gray-50 last:border-b-0 transition-colors"
@@ -330,7 +387,7 @@ function OrganizationSelect({ value, onChange }) {
                 placeholder="Enter organization name"
                 value={customValue}
                 onChange={(e) => setCustomValue(e.target.value)}
-                className="flex-1 px-3 py-2 text-gray-700 bg-gray-20 border-1 border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                className="flex-1 px-3 py-2 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
               <Button 
                 size="sm" 
@@ -348,7 +405,7 @@ function OrganizationSelect({ value, onChange }) {
 }
 
 // Important Notice Modal Component
-function ImportantNoticeModal({ isOpen, onClose, onAgree }) {
+function ImportantNoticeModal({ isOpen, onClose, onAgree }: ImportantNoticeModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -414,7 +471,7 @@ function ImportantNoticeModal({ isOpen, onClose, onAgree }) {
 }
 
 // Success Modal Component
-function SuccessModal({ isOpen, onClose, onViewCredential }) {
+function SuccessModal({ isOpen, onClose, onViewCredential }: SuccessModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -455,7 +512,7 @@ function SuccessModal({ isOpen, onClose, onViewCredential }) {
 }
 
 export default function MintPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     skillName: "",
     issuerOrganization: null,
     skillLevel: "",
@@ -466,7 +523,7 @@ export default function MintPage() {
     credentialType: ""
   })
   
-  const [mintedCredential, setMintedCredential] = useState(null)
+  const [mintedCredential, setMintedCredential] = useState<MintedCredential | null>(null)
   const [showNoticeModal, setShowNoticeModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
   const { toast } = useToast()
@@ -537,7 +594,7 @@ export default function MintPage() {
       const newCredential = await addMintedCredential(credentialData)
       
       if (newCredential) {
-        const mockCredential = {
+        const mockCredential: MintedCredential = {
           credentialId: newCredential.id,
           transactionHash: newCredential.vcId
         }
@@ -562,8 +619,8 @@ export default function MintPage() {
   }
 
   // Helper function for API endpoint mapping (for backend integration)
-  const getAPIEndpoint = (organizationName) => {
-    const apiEndpoints = {
+  const getAPIEndpoint = (organizationName: string): string => {
+    const apiEndpoints: Record<string, string> = {
       "GitHub": "/api/verify/github",
       "Coursera": "/api/verify/coursera", 
       "Udemy": "/api/verify/udemy",
@@ -576,7 +633,7 @@ export default function MintPage() {
   }
 
   // Helper function for API verification (for backend integration)
-  const verifyCredentialWithAPI = async (data) => {
+  const verifyCredentialWithAPI = async (data: any): Promise<{ isValid: boolean; verificationData: any }> => {
     // This function will be implemented by backend engineers
     // It should return { isValid: boolean, verificationData: object }
     return new Promise((resolve) => {
@@ -589,11 +646,15 @@ export default function MintPage() {
 
   const handleSuccessViewCredential = () => {
     setShowSuccessModal(false)
-    router.push(`/credential/${mintedCredential?.credentialId}`)
+    if (mintedCredential?.credentialId) {
+      router.push(`/credential/${mintedCredential.credentialId}`)
+    }
   }
 
   const handleShare = async () => {
-    const shareUrl = `${window.location.origin}/credential/${mintedCredential?.credentialId}`
+    if (!mintedCredential?.credentialId) return
+    
+    const shareUrl = `${window.location.origin}/credential/${mintedCredential.credentialId}`
     if (navigator.share) {
       try {
         await navigator.share({
@@ -633,7 +694,7 @@ export default function MintPage() {
     })
   }
 
-  const updateFormData = (field, value) => {
+  const updateFormData = (field: keyof FormData, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -668,7 +729,7 @@ export default function MintPage() {
               <div className="lg:col-span-2">
                 <GlowingCard glowColor="blue"  className="shadow-xs bg-white"> {/* card styles */}
                   <CardHeader className="pb-6">
-                    <div className="flex itecms-center gap-3">
+                    <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md shadow-blue-500/25">
                         <Award className="w-6 h-6 text-white " />
                       </div>
@@ -690,10 +751,10 @@ export default function MintPage() {
                           <SearchableSelect
                             options={allSkills}
                             value={formData.skillName}
-                            onChange={(value) => updateFormData("skillName", value)}
+                            onChange={(value: string) => updateFormData("skillName", value)}
                             placeholder="Select or type your skill"
                             allowCustom={true}
-                            onCustomValue={(value) => updateFormData("skillName", value)}
+                            onCustomValue={(value: string) => updateFormData("skillName", value)}
                             icon={<Code className="w-4 h-4" />}
                             
                           />
@@ -706,7 +767,7 @@ export default function MintPage() {
                           </label>
                           <OrganizationSelect
                             value={formData.issuerOrganization}
-                            onChange={(value) => updateFormData("issuerOrganization", value)}
+                            onChange={(value: Organization) => updateFormData("issuerOrganization", value)}
                           />
                           {formData.issuerOrganization?.hasAPI && (
                             <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
@@ -822,7 +883,7 @@ export default function MintPage() {
               {/* Right Column - Preview */}
               <div className="lg:col-span-1">
                 <div className="sticky top-8">
-                  <GlowingCard glowColor="indigo" className="shadow-md bg-white">
+                  <GlowingCard glowColor="blue" className="shadow-md bg-white">
                     <CardHeader>
                       <CardTitle className="text-black text-xl flex items-center gap-2">
                         <Globe className="w-5 h-5 text-indigo-500" />

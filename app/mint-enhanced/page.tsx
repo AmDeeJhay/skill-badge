@@ -30,8 +30,46 @@ import {
 } from "lucide-react"
 import { VerifiableCredential } from "@/lib/w3c-vc"
 
+// Type definitions
+interface InfoModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  content: React.ReactNode;
+}
+
+interface Feature {
+  title: string;
+  description: string;
+}
+
+interface InfoCardProps {
+  icon: React.ReactElement<any>;
+  title: string;
+  description: string;
+  features: Feature[];
+  color?: 'blue' | 'purple' | 'orange' | 'green';
+}
+
+interface FieldInfoProps {
+  title: string;
+  description: string;
+  examples?: string[];
+}
+
+type ColorClasses = {
+  icon: string;
+  bg: string;
+  border: string;
+  hover: string;
+};
+
+type ColorClassesMap = {
+  [K in 'blue' | 'purple' | 'orange' | 'green']: ColorClasses;
+};
+
 // Info Modal Component for field explanations
-function InfoModal({ isOpen, onClose, title, content }) {
+function InfoModal({ isOpen, onClose, title, content }: InfoModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -61,10 +99,10 @@ function InfoModal({ isOpen, onClose, title, content }) {
 }
 
 // Enhanced Info Card with toggles
-function InfoCard({ icon, title, description, features, color = "blue" }) {
+function InfoCard({ icon, title, description, features, color = "blue" }: InfoCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const colorClasses = {
+  const colorClasses: ColorClassesMap = {
     blue: {
       icon: "text-blue-500",
       bg: "bg-blue-50",
@@ -91,13 +129,18 @@ function InfoCard({ icon, title, description, features, color = "blue" }) {
     }
   };
 
+  const currentColorClasses = colorClasses[color];
+
   return (
     <Card className="bg-white border border-gray-200 hover:shadow-md transition-all duration-200">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 ${colorClasses[color].bg} rounded-xl flex items-center justify-center`}>
-              {React.cloneElement(icon, { className: `w-5 h-5 ${colorClasses[color].icon}` })}
+            <div className={`w-10 h-10 ${currentColorClasses.bg} rounded-xl flex items-center justify-center`}>
+              {React.cloneElement(icon, { 
+                className: `w-5 h-5 ${currentColorClasses.icon}`,
+                ...icon.props 
+              })}
             </div>
             <div>
               <CardTitle className="text-lg text-gray-900">{title}</CardTitle>
@@ -117,10 +160,12 @@ function InfoCard({ icon, title, description, features, color = "blue" }) {
       
       {isExpanded && (
         <CardContent className="pt-0">
-          <div className={`p-4 ${colorClasses[color].bg} ${colorClasses[color].border} border rounded-xl space-y-3`}>
+          <div className={`p-4 ${currentColorClasses.bg} ${currentColorClasses.border} border rounded-xl space-y-3`}>
             {features.map((feature, index) => (
               <div key={index} className="flex items-start gap-3">
-                <CheckCircle className={`w-4 h-4 ${colorClasses[color].icon} mt-0.5`} />
+                {React.cloneElement(<CheckCircle />, { 
+                  className: `w-4 h-4 ${currentColorClasses.icon} mt-0.5` 
+                })}
                 <div>
                   <p className="font-medium text-sm text-gray-900">{feature.title}</p>
                   <p className="text-xs text-gray-600">{feature.description}</p>
@@ -135,7 +180,7 @@ function InfoCard({ icon, title, description, features, color = "blue" }) {
 }
 
 // Field Info Component
-function FieldInfo({ title, description, examples = [] }) {
+function FieldInfo({ title, description, examples = [] }: FieldInfoProps) {
   const [showInfo, setShowInfo] = useState(false);
 
   return (
