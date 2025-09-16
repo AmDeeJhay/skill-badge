@@ -5,7 +5,7 @@ import { asyncHandler } from '@/middleware/errorHandler';
 import { authenticateJWT, AuthenticatedRequest } from '@/middleware/auth';
 import { VerificationService } from '@/services/verificationService';
 import { ApiResponse, VerifyCredentialRequest } from '@/types';
-import { logger } from '@/utils/logger';
+// import { logger } from '@/utils/logger';
 
 const router = Router();
 const verificationService = new VerificationService();
