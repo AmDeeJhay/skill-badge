@@ -51,7 +51,7 @@ async function testBackendAPI() {
     console.log('4. Fetching user credentials...');
     const credentials = await apiClient.getUserCredentials(testWallet);
     console.log('✅ Credentials fetched:', credentials.data.length, 'credential(s)');
-    credentials.data.forEach((cred: any, index: number) => {
+    credentials.data.forEach((cred, index) => {
       console.log(`   ${index + 1}. ${cred.skill} (${cred.status})`);
     });
     console.log('');
@@ -76,7 +76,7 @@ async function testBackendAPI() {
     console.log('7. Fetching trending skills...');
     const trendingSkills = await apiClient.getTrendingSkills(5);
     console.log('✅ Trending skills:');
-    trendingSkills.data.forEach((skill: any, index: number) => {
+    trendingSkills.data.forEach((skill, index) => {
       console.log(`   ${index + 1}. ${skill.name} (${skill.count} credentials)`);
     });
     console.log('');
