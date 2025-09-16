@@ -139,10 +139,15 @@ export class CredentialIssuer {
     const credentialId = `credential:${uuidv4()}`
     const issuanceDate = new Date().toISOString()
     
+    // Fix: Properly construct SkillCredentialSubject
     const credentialSubject: SkillCredentialSubject = {
       id: subjectDID,
       type: ['SkillCredential'],
-      ...skillData
+      skillName: skillData.skillName,
+      skillLevel: skillData.skillLevel,
+      verifierDID: skillData.verifierDID,
+      evidenceUrl: skillData.evidenceUrl,
+      description: skillData.description
     }
 
     // Generate proof first before creating credential
@@ -185,10 +190,17 @@ export class CredentialIssuer {
     const credentialId = `credential:${uuidv4()}`
     const issuanceDate = new Date().toISOString()
     
+    // Fix: Properly construct ExperienceCredentialSubject
     const credentialSubject: ExperienceCredentialSubject = {
       id: subjectDID,
       type: ['ExperienceCredential'],
-      ...experienceData
+      projectTitle: experienceData.projectTitle,
+      projectDescription: experienceData.projectDescription,
+      verifierDID: experienceData.verifierDID,
+      startDate: experienceData.startDate,
+      endDate: experienceData.endDate,
+      technologies: experienceData.technologies,
+      evidenceUrl: experienceData.evidenceUrl
     }
 
     // Generate proof first before creating credential

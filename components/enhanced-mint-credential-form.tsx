@@ -43,6 +43,24 @@ interface EnhancedMintCredentialFormProps {
   onSuccess?: (credential: VerifiableCredential) => void
 }
 
+// Type guard functions
+const isSkillCredential = (data: SkillCredentialData | ExperienceCredentialData): data is SkillCredentialData => {
+  return 'skillName' in data;
+}
+
+const isExperienceCredential = (data: SkillCredentialData | ExperienceCredentialData): data is ExperienceCredentialData => {
+  return 'projectTitle' in data;
+}
+
+// Backend credential response type
+interface BackendCredentialResponse {
+  data: {
+    id: string;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
 export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredentialFormProps) {
   const { selectedAccount, extension, isConnected } = usePolkadotWallet()
   const { toast } = useToast()
@@ -112,8 +130,8 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
         : (formData as ExperienceCredentialData).projectTitle
 
       const result = await verificationServiceManager.verifySkillWithMultipleSources(
-        externalVerification.githubUsername || undefined,
-        externalVerification.linkedinProfileId || undefined,
+        externalVerification.githubUsername,
+        externalVerification.linkedinProfileId,
         skillName
       )
 
@@ -184,7 +202,14 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
         name: "User", // You might want to get this from wallet or user input
       })
 
-      // Create credential data for backend
+      // Create credential data for backend with proper description handling
+      const getDescription = () => {
+        if (isSkillCredential(formData)) {
+          return formData.description || "";
+        }
+        return ""; // ExperienceCredential doesn't have description in the current type
+      }
+
       const credentialData = {
         skill: credentialType === 'SkillCredential' 
           ? (formData as SkillCredentialData).skillName 
@@ -195,23 +220,23 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
         metadata: {
           credentialType,
           skillLevel: credentialType === 'SkillCredential' ? (formData as SkillCredentialData).skillLevel : undefined,
-          description: formData.description,
-          evidenceUrl: formData.evidenceUrl,
+          description: getDescription(),
+          evidenceUrl: formData.evidenceUrl || "",
           ...(credentialType === 'ExperienceCredential' && {
             projectTitle: (formData as ExperienceCredentialData).projectTitle,
             projectDescription: (formData as ExperienceCredentialData).projectDescription,
             startDate: (formData as ExperienceCredentialData).startDate,
             endDate: (formData as ExperienceCredentialData).endDate,
-            technologies: (formData as ExperienceCredentialData).technologies,
+            technologies: (formData as ExperienceCredentialData).technologies || [],
           })
         }
       }
 
       // Create credential in backend
-      const backendCredential = await backendIntegration.createW3CCredential(
+      const backendCredentialResponse = await backendIntegration.createW3CCredential(
         subjectDID, // Using DID as userId for now
         credentialData
-      )
+      ) as BackendCredentialResponse
 
       // Also create local W3C VC for verification
       let credential: VerifiableCredential
@@ -243,10 +268,10 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
       if (verificationResult?.combined.isValid) {
         try {
           await backendIntegration.verifyCredentialWithExternalSources(
-            backendCredential.data.id,
+            backendCredentialResponse.data.id,
             {
-              github: externalVerification.githubUsername,
-              linkedin: externalVerification.linkedinProfileId,
+              github: externalVerification.githubUsername || undefined,
+              linkedin: externalVerification.linkedinProfileId || undefined,
             }
           )
         } catch (error) {
@@ -517,21 +542,22 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
               )}
             </div>
 
-            {/* Description */}
-            <div className="space-y-2">
-              <Label htmlFor="description" className="flex items-center gap-2">
-                <FileText className="w-4 h-4" />
-                Description (Optional)
-              </Label>
-              <Textarea
-                id="description"
-                placeholder="Additional details about this credential..."
-                value={formData.description || ""}
-                onChange={(e) => handleInputChange("description", e.target.value)}
-                rows={3}
-                className={errors.description ? "border-destructive" : ""}
-              />
-            </div>
+            {/* Description - Only for SkillCredential */}
+            {credentialType === 'SkillCredential' && (
+              <div className="space-y-2">
+                <Label htmlFor="description" className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  Description (Optional)
+                </Label>
+                <Textarea
+                  id="description"
+                  placeholder="Additional details about this credential..."
+                  value={(formData as SkillCredentialData).description || ""}
+                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  rows={3}
+                />
+              </div>
+            )}
 
             {/* Expiration Date */}
             <div className="space-y-2">

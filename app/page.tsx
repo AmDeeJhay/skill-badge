@@ -17,7 +17,9 @@ export default function LandingPage() {
               <SkillPassportLogo className="w-8 h-8 text-primary bg-blue-200 rounded-lg border-1 border-blue-200" />
               <span className="font-bold text-xl text-foreground">Skill Badge</span>
             </Link>
-            <WalletConnectionButton variant="default" className="text-blue-500" />
+            <div className="text-blue-500">
+              <WalletConnectionButton variant="default" />
+            </div>
           </div>
         </div>
       </header>
@@ -265,7 +267,9 @@ export default function LandingPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <WalletConnectionButton variant="default" size="lg" className="h-10 px-8 text-lg text-blue-500 rounded-xl" />
+            <div className="h-10 px-8 text-lg text-blue-500 rounded-xl">
+              <WalletConnectionButton variant="default" />
+            </div>
           </div>
         </div>
       </section>

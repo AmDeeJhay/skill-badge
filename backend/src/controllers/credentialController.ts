@@ -1,16 +1,32 @@
 // Credential controller
-import type { Router, Request, Response } from 'express';
-// import type { body, param, query, validationResult } from 'express-validator';
-import { asyncHandler } from '@/middleware/errorHandler';
-import { authenticateJWT, AuthenticatedRequest } from '@/middleware/auth';
-import { CredentialService } from '@/services/credentialService';
-import { ApiResponse, PaginatedResponse, CreateCredentialRequest } from '@/types';
-
-// Import express and express-validator with require
 const express = require('express');
-const { body: bodyValidator, param: paramValidator, query: queryValidator, validationResult: validateResult } = require('express-validator');
+const { body: bodyValidator, param: paramValidator, validationResult: validateResult } = require('express-validator');
 
-const router: Router = express.Router();
+import { asyncHandler } from '@/middleware/errorHandler';
+import { authenticateJWT } from '@/middleware/auth';
+import { CredentialService } from '@/services/credentialService';
+import { ApiResponse, CreateCredentialRequest } from '@/types';
+
+// Enhanced AuthenticatedRequest interface
+interface AuthenticatedRequest {
+  user?: { id: string };
+  params: any;
+  query: any;
+  body: any;
+}
+
+interface Response {
+  json(data: any): Response;
+  status(code: number): Response;
+}
+
+interface Request {
+  params: any;
+  query: any;
+  body: any;
+}
+
+const router = express.Router();
 const credentialService = new CredentialService();
 
 // Validation middleware
