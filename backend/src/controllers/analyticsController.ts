@@ -1,16 +1,19 @@
 // Analytics controller
-import { Router, Request, Response } from 'express';
-import { query, validationResult } from 'express-validator';
+import type { Router, Request, Response } from 'express';
+// import type { query, validationResult } from 'express-validator';
 import { asyncHandler } from '@/middleware/errorHandler';
 import { AnalyticsService } from '@/services/analyticsService';
 import { ApiResponse } from '@/types';
-import { logger } from '@/utils/logger';
 
-const router = Router();
+// Import express and express-validator dynamically or assume they're available
+const express = require('express');
+const { query: queryValidator, validationResult: validateResult } = require('express-validator');
+
+const router: Router = express.Router();
 const analyticsService = new AnalyticsService();
 
 // GET /analytics/overview - Platform statistics
-router.get('/overview', asyncHandler(async (req: Request, res: Response) => {
+router.get('/overview', asyncHandler(async (_req: Request, res: Response) => {
   const overview = await analyticsService.getOverviewStats();
 
   const response: ApiResponse = {
@@ -24,9 +27,9 @@ router.get('/overview', asyncHandler(async (req: Request, res: Response) => {
 
 // GET /analytics/skills-trending - Popular skills
 router.get('/skills-trending', [
-  query('limit').optional().isInt({ min: 1, max: 100 }),
+  queryValidator('limit').optional().isInt({ min: 1, max: 100 }),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -48,7 +51,7 @@ router.get('/skills-trending', [
 }));
 
 // GET /analytics/verification-stats - Verification success rates
-router.get('/verification-stats', asyncHandler(async (req: Request, res: Response) => {
+router.get('/verification-stats', asyncHandler(async (_req: Request, res: Response) => {
   const stats = await analyticsService.getVerificationStats();
 
   const response: ApiResponse = {
@@ -62,9 +65,9 @@ router.get('/verification-stats', asyncHandler(async (req: Request, res: Respons
 
 // GET /analytics/user-growth - User acquisition metrics
 router.get('/user-growth', [
-  query('period').optional().isIn(['7d', '30d', '90d', '1y']),
+  queryValidator('period').optional().isIn(['7d', '30d', '90d', '1y']),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -87,9 +90,9 @@ router.get('/user-growth', [
 
 // GET /analytics/organizations - Organization statistics
 router.get('/organizations', [
-  query('limit').optional().isInt({ min: 1, max: 100 }),
+  queryValidator('limit').optional().isInt({ min: 1, max: 100 }),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,

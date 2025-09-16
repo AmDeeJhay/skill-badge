@@ -7,20 +7,20 @@ import { logger } from '@/utils/logger';
 const router = Router();
 
 // GET /health - Basic health check
-router.get('/', asyncHandler(async (req: Request, res: Response) => {
+router.get('/', asyncHandler(async (_req: Request, res: Response) => {
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
+    version: process.env['npm_package_version'] || '1.0.0',
+    environment: process.env['NODE_ENV'] || 'development',
   };
 
   res.json(health);
 }));
 
 // GET /health/detailed - Detailed system status
-router.get('/detailed', asyncHandler(async (req: Request, res: Response) => {
+router.get('/detailed', asyncHandler(async (_req: Request, res: Response) => {
   const startTime = Date.now();
   
   // Check database connection
@@ -32,7 +32,7 @@ router.get('/detailed', asyncHandler(async (req: Request, res: Response) => {
     databaseLatency = Date.now() - dbStart;
   } catch (error) {
     databaseStatus = 'unhealthy';
-    logger.error('Database health check failed:', error);
+    console.error('Database health check failed:', error);
   }
 
   // Check Redis connection (if configured)
@@ -50,8 +50,8 @@ router.get('/detailed', asyncHandler(async (req: Request, res: Response) => {
     status: databaseStatus === 'healthy' ? 'ok' : 'degraded',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
+    version: process.env ['npm_package_version'] || '1.0.0',
+    environment: process.env['NODE_ENV'] || 'development',
     services: {
       database: {
         status: databaseStatus,
@@ -77,13 +77,13 @@ router.get('/detailed', asyncHandler(async (req: Request, res: Response) => {
 // Helper function to check GitHub API
 async function checkGitHubAPI(): Promise<string> {
   try {
-    if (!process.env.GITHUB_TOKEN) {
+    if (!process.env['GITHUB_TOKEN']) {
       return 'not_configured';
     }
 
     const response = await fetch('https://api.github.com/rate_limit', {
       headers: {
-        'Authorization': `token ${process.env.GITHUB_TOKEN}`,
+        'Authorization': `token ${process.env['GITHUB_TOKEN']}`,
       },
     });
 

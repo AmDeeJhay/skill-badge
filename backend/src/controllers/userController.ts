@@ -1,35 +1,44 @@
-// User controller
-import { Router, Request, Response } from 'express';
-import { body, param, query, validationResult } from 'express-validator';
+const express = require('express');
+const { body: bodyValidator, param: paramValidator, query: queryValidator, validationResult: validateResult } = require('express-validator');
+
 import { asyncHandler } from '@/middleware/errorHandler';
-import { authenticateJWT, AuthenticatedRequest } from '@/middleware/auth';
 import { UserService } from '@/services/userService';
 import { ApiResponse, PaginatedResponse, CreateUserRequest, UpdateUserRequest } from '@/types';
-import { logger } from '@/utils/logger';
 
-const router = Router();
+interface Request {
+  params: any;
+  query: any;
+  body: any;
+}
+
+interface Response {
+  json(data: any): Response;
+  status(code: number): Response;
+}
+
+const router = express.Router();
 const userService = new UserService();
 
 // Validation middleware
 const validateUser = [
-  body('wallet').isString().notEmpty().withMessage('Wallet address is required'),
-  body('did').isString().notEmpty().withMessage('DID is required'),
-  body('name').optional().isString().isLength({ max: 100 }),
-  body('bio').optional().isString().isLength({ max: 500 }),
-  body('avatarUrl').optional().isURL(),
-  body('links').optional().isObject(),
+  bodyValidator('wallet').isString().notEmpty().withMessage('Wallet address is required'),
+  bodyValidator('did').isString().notEmpty().withMessage('DID is required'),
+  bodyValidator('name').optional().isString().isLength({ max: 100 }),
+  bodyValidator('bio').optional().isString().isLength({ max: 500 }),
+  bodyValidator('avatarUrl').optional().isURL(),
+  bodyValidator('links').optional().isObject(),
 ];
 
 const validateUpdateUser = [
-  body('name').optional().isString().isLength({ max: 100 }),
-  body('bio').optional().isString().isLength({ max: 500 }),
-  body('avatarUrl').optional().isURL(),
-  body('links').optional().isObject(),
+  bodyValidator('name').optional().isString().isLength({ max: 100 }),
+  bodyValidator('bio').optional().isString().isLength({ max: 500 }),
+  bodyValidator('avatarUrl').optional().isURL(),
+  bodyValidator('links').optional().isObject(),
 ];
 
 // POST /users - Create or update user
 router.post('/', validateUser, asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -54,9 +63,9 @@ router.post('/', validateUser, asyncHandler(async (req: Request, res: Response) 
 
 // GET /users/:wallet - Get user by wallet
 router.get('/:wallet', [
-  param('wallet').isString().notEmpty(),
+  paramValidator('wallet').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -87,10 +96,10 @@ router.get('/:wallet', [
 
 // PUT /users/:wallet - Update user
 router.put('/:wallet', [
-  param('wallet').isString().notEmpty(),
+  paramValidator('wallet').isString().notEmpty(),
   ...validateUpdateUser,
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -125,9 +134,9 @@ router.put('/:wallet', [
 
 // DELETE /users/:wallet - Delete user
 router.delete('/:wallet', [
-  param('wallet').isString().notEmpty(),
+  paramValidator('wallet').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -158,9 +167,9 @@ router.delete('/:wallet', [
 
 // GET /users/:wallet/stats - Get user statistics
 router.get('/:wallet/stats', [
-  param('wallet').isString().notEmpty(),
+  paramValidator('wallet').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -191,11 +200,11 @@ router.get('/:wallet/stats', [
 
 // GET /users - Get paginated list of users
 router.get('/', [
-  query('page').optional().isInt({ min: 1 }),
-  query('limit').optional().isInt({ min: 1, max: 100 }),
-  query('search').optional().isString(),
+  queryValidator('page').optional().isInt({ min: 1 }),
+  queryValidator('limit').optional().isInt({ min: 1, max: 100 }),
+  queryValidator('search').optional().isString(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,

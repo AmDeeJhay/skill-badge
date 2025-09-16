@@ -1,27 +1,30 @@
 // Credential controller
-import { Router, Request, Response } from 'express';
-import { body, param, query, validationResult } from 'express-validator';
+import type { Router, Request, Response } from 'express';
+// import type { body, param, query, validationResult } from 'express-validator';
 import { asyncHandler } from '@/middleware/errorHandler';
 import { authenticateJWT, AuthenticatedRequest } from '@/middleware/auth';
 import { CredentialService } from '@/services/credentialService';
 import { ApiResponse, PaginatedResponse, CreateCredentialRequest } from '@/types';
-import { logger } from '@/utils/logger';
 
-const router = Router();
+// Import express and express-validator with require
+const express = require('express');
+const { body: bodyValidator, param: paramValidator, query: queryValidator, validationResult: validateResult } = require('express-validator');
+
+const router: Router = express.Router();
 const credentialService = new CredentialService();
 
 // Validation middleware
 const validateCredential = [
-  body('skill').isString().notEmpty().withMessage('Skill is required'),
-  body('organization').isString().notEmpty().withMessage('Organization is required'),
-  body('issuer').isString().notEmpty().withMessage('Issuer is required'),
-  body('expirationDate').optional().isISO8601().withMessage('Invalid expiration date'),
-  body('metadata').optional().isObject(),
+  bodyValidator('skill').isString().notEmpty().withMessage('Skill is required'),
+  bodyValidator('organization').isString().notEmpty().withMessage('Organization is required'),
+  bodyValidator('issuer').isString().notEmpty().withMessage('Issuer is required'),
+  bodyValidator('expirationDate').optional().isISO8601().withMessage('Invalid expiration date'),
+  bodyValidator('metadata').optional().isObject(),
 ];
 
 // POST /credentials - Create new credential
 router.post('/', authenticateJWT, validateCredential, asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -48,9 +51,9 @@ router.post('/', authenticateJWT, validateCredential, asyncHandler(async (req: A
 
 // GET /credentials/:wallet - Get all user credentials
 router.get('/:wallet', [
-  param('wallet').isString().notEmpty(),
+  paramValidator('wallet').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -73,9 +76,9 @@ router.get('/:wallet', [
 
 // GET /credentials/single/:id - Get single credential
 router.get('/single/:id', [
-  param('id').isString().notEmpty(),
+  paramValidator('id').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -106,10 +109,10 @@ router.get('/single/:id', [
 
 // PUT /credentials/:id - Update credential
 router.put('/:id', authenticateJWT, [
-  param('id').isString().notEmpty(),
+  paramValidator('id').isString().notEmpty(),
   ...validateCredential,
 ], asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -145,9 +148,9 @@ router.put('/:id', authenticateJWT, [
 
 // DELETE /credentials/:id - Delete credential
 router.delete('/:id', authenticateJWT, [
-  param('id').isString().notEmpty(),
+  paramValidator('id').isString().notEmpty(),
 ], asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -180,10 +183,10 @@ router.delete('/:id', authenticateJWT, [
 
 // POST /credentials/batch-verify - Bulk verification
 router.post('/batch-verify', authenticateJWT, [
-  body('credentialIds').isArray().withMessage('Credential IDs must be an array'),
-  body('credentialIds.*').isString().withMessage('Each credential ID must be a string'),
+  bodyValidator('credentialIds').isArray().withMessage('Credential IDs must be an array'),
+  bodyValidator('credentialIds.*').isString().withMessage('Each credential ID must be a string'),
 ], asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -210,10 +213,10 @@ router.post('/batch-verify', authenticateJWT, [
 
 // POST /credentials/:id/revoke - Revoke credential
 router.post('/:id/revoke', authenticateJWT, [
-  param('id').isString().notEmpty(),
-  body('reason').optional().isString(),
+  paramValidator('id').isString().notEmpty(),
+  bodyValidator('reason').optional().isString(),
 ], asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
@@ -247,9 +250,9 @@ router.post('/:id/revoke', authenticateJWT, [
 
 // GET /credentials/status/:id - Get credential status
 router.get('/status/:id', [
-  param('id').isString().notEmpty(),
+  paramValidator('id').isString().notEmpty(),
 ], asyncHandler(async (req: Request, res: Response) => {
-  const errors = validationResult(req);
+  const errors = validateResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({
       success: false,
