@@ -152,7 +152,7 @@ export default function LandingPage() {
               Why Choose <span className="text-blue-500">Skill Badge?</span>
             </h2>
             <p className="text-bold text-gray-900 max-w-3xl mx-auto font-sm">
-              Leverage Polkadot's cutting-edge technology to create verifiable credentials that matter
+              Leverage Polkadots cutting-edge technology to create verifiable credentials that matter
             </p>
           </div>
 
@@ -164,7 +164,7 @@ export default function LandingPage() {
                 </div>
                 <CardTitle className="text-xl text-blue-500 font-semibold mb-3">Blockchain Security</CardTitle>
                 <CardDescription className="text-muted-foreground leading-relaxed">
-                  Your credentials are secured by Polkadot's robust infrastructure, ensuring they can never be forged or compromised.
+                  Your credentials are secured by Polkadots robust infrastructure, ensuring they can never be forged or compromised.
                 </CardDescription>
               </CardHeader>
             </Card>

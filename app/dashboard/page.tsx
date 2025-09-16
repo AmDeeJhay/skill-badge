@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Poppins } from "next/font/google"
+// import { Poppins } from "next/font/google"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+// import { Badge } from "@/components/ui/badge"
 import { SkillPassportLogo } from "@/components/skill-passport-logo"
 import { Award, Plus, TrendingUp, Shield, Eye, Wallet, Copy, ExternalLink, Zap, Globe, Users } from "lucide-react"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"

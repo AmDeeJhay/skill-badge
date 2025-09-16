@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { addMintedCredential } from "@/lib/data-service"
-import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Zap, Globe, Copy, TrendingUp, AlertTriangle, ArrowRight, X, Search, Calendar, Building, Code, GraduationCap, Briefcase, Link as LinkIcon } from "lucide-react"
-import Link from "next/link"
+import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Globe, AlertTriangle, X, Search, Calendar, Building, Code,  Link as LinkIcon } from "lucide-react"
+// import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 // Type definitions
@@ -285,10 +285,10 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
     }))
   )
 
-  const filteredOrganizations = allOrganizations.filter((org: Organization) => 
-    org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (org.category && org.category.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
+  // const filteredOrganizations = allOrganizations.filter((org: Organization) => 
+  //   org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   (org.category && org.category.toLowerCase().includes(searchTerm.toLowerCase()))
+  // )
 
   const handleSelect = (org: Organization) => {
     onChange(org)
@@ -568,7 +568,7 @@ export default function MintPage() {
       if (formData.issuerOrganization?.hasAPI) {
         try {
           // This is where backend engineers will integrate with various APIs
-          const apiEndpoint = getAPIEndpoint(formData.issuerOrganization.name)
+          const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name)
           const verificationData = await verifyCredentialWithAPI({
             organization: formData.issuerOrganization.name,
             skillName: formData.skillName,

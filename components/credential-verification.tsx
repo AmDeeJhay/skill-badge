@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { credentialVerifier, credentialManager } from "@/lib/w3c-vc"
-import { backendIntegration, apiClient } from "@/lib/backend-integration"
+import { apiClient } from "@/lib/backend-integration"
 import { 
   Loader2, 
   CheckCircle, 
@@ -18,9 +18,6 @@ import {
   Clock,
   XCircle,
   FileText,
-  User,
-  Calendar,
-  ExternalLink
 } from "lucide-react"
 
 interface CredentialVerificationProps {
@@ -186,7 +183,7 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
       })
     } catch (error) {
       toast({
-        title: "Error",
+        // title: "Error",
         description: "Failed to check credential status",
         variant: "destructive"
       })

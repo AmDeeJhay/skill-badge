@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { 
   credentialIssuer, 
-  credentialVerifier, 
+  // credentialVerifier, 
   credentialManager, 
   didManager,
   type VerifiableCredential,
