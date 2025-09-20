@@ -11,9 +11,9 @@ export interface ApiCredential {
   issuer: string;
   issuanceDate: string;
   expirationDate?: string;
-  proof: any;
+  proof: Record<string, unknown>;
   status: 'VALID' | 'EXPIRED' | 'REVOKED' | 'PENDING';
-  metadata?: any;
+  metadata?: Record<string, unknown>;
   revokedReason?: string;
   createdAt: string;
   updatedAt: string;
@@ -26,7 +26,7 @@ export interface ApiUser {
   name?: string;
   bio?: string;
   avatarUrl?: string;
-  links?: any;
+  links?: Record<string, unknown>;
   isVerified: boolean;
   reputation: number;
   createdAt: string;
@@ -128,7 +128,7 @@ export const dataService = {
     name?: string;
     bio?: string;
     avatarUrl?: string;
-    links?: any;
+    links?: Record<string, unknown>;
   }): Promise<ApiUser | null> {
     try {
       const response = await apiClient.createUser(userData) as ApiUserResponse;
@@ -150,7 +150,7 @@ export const dataService = {
   },
 
   // Credential management
-  async getUserCredentials(wallet: string): Promise<any[]> {
+  async getUserCredentials(wallet: string): Promise<ReturnType<typeof convertApiCredentialToFrontend>[]> {
     try {
       const response = await apiClient.getUserCredentials(wallet) as ApiCredentialsResponse;
       return response.data.map(convertApiCredentialToFrontend);
@@ -160,7 +160,7 @@ export const dataService = {
     }
   },
 
-  async getCredential(id: string): Promise<any | null> {
+  async getCredential(id: string): Promise<ReturnType<typeof convertApiCredentialToFrontend> | null> {
     try {
       const response = await apiClient.getCredential(id) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
@@ -175,8 +175,8 @@ export const dataService = {
     organization: string;
     issuer: string;
     expirationDate?: string;
-    metadata?: any;
-  }, token?: string): Promise<any | null> {
+    metadata?: Record<string, unknown>;
+  }, token?: string): Promise<ReturnType<typeof convertApiCredentialToFrontend> | null> {
     try {
       const response = await apiClient.createCredential(credentialData, token) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
@@ -186,7 +186,7 @@ export const dataService = {
     }
   },
 
-  async updateCredential(id: string, credentialData: any, token?: string): Promise<any | null> {
+  async updateCredential(id: string, credentialData: Record<string, unknown>, token?: string): Promise<ApiCredential | null> {
     try {
       const response = await apiClient.updateCredential(id, credentialData, token) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
@@ -233,9 +233,9 @@ export const dataService = {
       github?: string;
       linkedin?: string;
     };
-  }, token?: string): Promise<any | null> {
+  }, token?: string): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.verifyCredential(verificationData, token) as ApiResponse<any>;
+      const response = await apiClient.verifyCredential(verificationData, token) as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to verify credential:', error);
@@ -243,9 +243,9 @@ export const dataService = {
     }
   },
 
-  async verifyGitHubSkill(username: string, skill: string): Promise<any | null> {
+  async verifyGitHubSkill(username: string, skill: string): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.verifyGitHubSkill(username, skill) as ApiResponse<any>;
+      const response = await apiClient.verifyGitHubSkill(username, skill) as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to verify GitHub skill:', error);
@@ -257,9 +257,9 @@ export const dataService = {
     skillName: string;
     githubUsername?: string;
     linkedinProfileId?: string;
-  }, token?: string): Promise<any | null> {
+  }, token?: string): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.verifyMultiSource(verificationData, token) as ApiResponse<any>;
+      const response = await apiClient.verifyMultiSource(verificationData, token) as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to perform multi-source verification:', error);
@@ -268,9 +268,9 @@ export const dataService = {
   },
 
   // Analytics
-  async getOverviewStats(): Promise<any | null> {
+  async getOverviewStats(): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.getOverviewStats() as ApiResponse<any>;
+      const response = await apiClient.getOverviewStats() as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch overview stats:', error);
@@ -278,9 +278,9 @@ export const dataService = {
     }
   },
 
-  async getTrendingSkills(limit = 20): Promise<any[] | null> {
+  async getTrendingSkills(limit = 20): Promise<Record<string, unknown>[] | null> {
     try {
-      const response = await apiClient.getTrendingSkills(limit) as ApiResponse<any[]>;
+      const response = await apiClient.getTrendingSkills(limit) as ApiResponse<Record<string, unknown>[]>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch trending skills:', error);
@@ -288,9 +288,9 @@ export const dataService = {
     }
   },
 
-  async getVerificationStats(): Promise<any | null> {
+  async getVerificationStats(): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.getVerificationStats() as ApiResponse<any>;
+      const response = await apiClient.getVerificationStats() as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch verification stats:', error);
@@ -298,9 +298,9 @@ export const dataService = {
     }
   },
 
-  async getUserGrowth(period = '30d'): Promise<any | null> {
+  async getUserGrowth(period = '30d'): Promise<Record<string, unknown> | null> {
     try {
-      const response = await apiClient.getUserGrowth(period) as ApiResponse<any>;
+      const response = await apiClient.getUserGrowth(period) as ApiResponse<Record<string, unknown>>;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch user growth:', error);
@@ -309,7 +309,7 @@ export const dataService = {
   },
 
   // Health check
-  async getHealth(): Promise<any | null> {
+  async getHealth(): Promise<Record<string, unknown> | null> {
     try {
       const response = await apiClient.getHealth();
       return response;
@@ -325,7 +325,7 @@ export const getCredentialsByAddress = async (address: string) => {
   return await dataService.getUserCredentials(address);
 };
 
-export const getCredentialStats = (credentials: any[]) => {
+export const getCredentialStats = (credentials: ApiCredential[]) => {
   const now = new Date();
   const thisMonth = credentials.filter((c) => {
     const issueDate = new Date(c.issueDate);
@@ -353,7 +353,7 @@ export const addMintedCredential = async (credentialData: {
   organization: string;
   issuer: string;
   expirationDate?: string;
-  metadata?: any;
+  metadata?: Record<string, unknown>;
 }, token?: string) => {
   return await dataService.createCredential(credentialData, token);
 };

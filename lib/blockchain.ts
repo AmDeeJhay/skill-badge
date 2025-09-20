@@ -12,9 +12,9 @@ export interface MintingResult {
 
 // Mock blockchain interaction - in a real app, this would interact with Polkadot/Substrate
 export const mintCredential = async (
-  credentialData: CredentialFormData,
-  extension: InjectedExtension,
-  accountAddress: string,
+  _credentialData: CredentialFormData,
+  _extension: InjectedExtension,
+  _accountAddress: string,
 ): Promise<MintingResult> => {
   // Simulate transaction delay
   await new Promise((resolve) => setTimeout(resolve, 2000))

@@ -34,7 +34,7 @@ class ApiClient {
   }
 
   // User management
-  async createUser(userData: any) {
+  async createUser(userData: Record<string, unknown>) {
     return this.request('/users', {
       method: 'POST',
       body: JSON.stringify(userData),
@@ -45,7 +45,7 @@ class ApiClient {
     return this.request(`/users/${wallet}`);
   }
 
-  async updateUser(wallet: string, userData: any) {
+  async updateUser(wallet: string, userData: Record<string, unknown>) {
     return this.request(`/users/${wallet}`, {
       method: 'PUT',
       body: JSON.stringify(userData),
@@ -57,7 +57,7 @@ class ApiClient {
   }
 
   // Credential management
-  async createCredential(credentialData: any, token?: string) {
+  async createCredential(credentialData: Record<string, unknown>, token?: string) {
     return this.request('/credentials', {
       method: 'POST',
       body: JSON.stringify(credentialData),
@@ -73,7 +73,7 @@ class ApiClient {
     return this.request(`/credentials/single/${id}`);
   }
 
-  async updateCredential(id: string, credentialData: any, token?: string) {
+  async updateCredential(id: string, credentialData: Record<string, unknown>, token?: string) {
     return this.request(`/credentials/${id}`, {
       method: 'PUT',
       body: JSON.stringify(credentialData),
@@ -101,7 +101,7 @@ class ApiClient {
   }
 
   // Verification
-  async verifyCredential(verificationData: any, token?: string) {
+  async verifyCredential(verificationData: Record<string, unknown>, token?: string) {
     return this.request('/verify', {
       method: 'POST',
       body: JSON.stringify(verificationData),
@@ -113,7 +113,7 @@ class ApiClient {
     return this.request(`/verify/github/${username}?skill=${encodeURIComponent(skill)}`);
   }
 
-  async verifyMultiSource(verificationData: any, token?: string) {
+  async verifyMultiSource(verificationData: Record<string, unknown>, token?: string) {
     return this.request('/verify/multi-source', {
       method: 'POST',
       body: JSON.stringify(verificationData),
@@ -167,7 +167,7 @@ export { ApiClient };
 // Utility functions for frontend integration
 export const backendIntegration = {
   // Initialize user with backend
-  async initializeUser(wallet: string, did: string, userData?: any) {
+  async initializeUser(wallet: string, did: string, userData?: Record<string, unknown>) {
     try {
       const user = await apiClient.createUser({
         wallet,
@@ -189,7 +189,7 @@ export const backendIntegration = {
       organization: string;
       issuer: string;
       expirationDate?: string;
-      metadata?: any;
+      metadata?: Record<string, unknown>;
     },
     token?: string
   ) {

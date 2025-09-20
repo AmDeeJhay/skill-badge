@@ -56,9 +56,9 @@ const isExperienceCredential = (data: SkillCredentialData | ExperienceCredential
 interface BackendCredentialResponse {
   data: {
     id: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredentialFormProps) {
@@ -84,7 +84,7 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<any>(null)
+  const [verificationResult, setVerificationResult] = useState<Record<string, unknown> | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -573,7 +573,7 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
                 min={new Date().toISOString().split('T')[0]}
               />
               <p className="text-xs text-muted-foreground">
-                Leave empty for credentials that don't expire
+                Leave empty for credentials that don&apos;t expire
               </p>
             </div>
 

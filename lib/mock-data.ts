@@ -59,7 +59,7 @@ export const getCredentialsByAddress = (address: string): Credential[] => {
 }
 
 // Simulated storage for newly minted credentials
-let mintedCredentials: Credential[] = []
+const mintedCredentials: Credential[] = []
 
 // Function to add a new credential (called from mint page)
 export const addMintedCredential = (credential: Omit<Credential, 'id'>) => {
@@ -72,13 +72,13 @@ export const addMintedCredential = (credential: Omit<Credential, 'id'>) => {
 }
 
 // Get all credentials including minted ones
-export const getAllCredentials = (address: string): Credential[] => {
+export const getAllCredentials = (_address: string): Credential[] => {
   return [...mintedCredentials, ...mockCredentials]
 }
 
 // Get recent credentials (last 3-4)
-export const getRecentCredentials = (address: string, limit: number = 4): Credential[] => {
-  const allCredentials = getAllCredentials(address)
+export const getRecentCredentials = (_address: string, limit: number = 4): Credential[] => {
+  const allCredentials = getAllCredentials(_address)
   return allCredentials
     .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
     .slice(0, limit)

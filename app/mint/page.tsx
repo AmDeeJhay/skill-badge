@@ -278,12 +278,7 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [customValue, setCustomValue] = useState("")
 
-  const allOrganizations = ORGANIZATIONS.flatMap(category => 
-    category.organizations.map(org => ({
-      ...org,
-      category: category.category
-    }))
-  )
+  // Removed unused variable allOrganizations
 
   // const filteredOrganizations = allOrganizations.filter((org: Organization) => 
   //   org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -491,7 +486,7 @@ function SuccessModal({ isOpen, onClose, onViewCredential }: SuccessModalProps) 
 
           <h2 className="text-2xl font-bold text-gray-900 mb-3">Credential Minted Successfully!</h2>
           <p className="text-gray-600 mb-8 leading-relaxed">
-            Your skill credential has been created and verified on the Polkadot blockchain. It's now part of your permanent digital identity.
+            Your skill credential has been created and verified on the Polkadot blockchain. It&apos;s now part of your permanent digital identity.
           </p>
 
           <div className="flex items-center justify-center gap-2 mb-8">
@@ -568,7 +563,7 @@ export default function MintPage() {
       if (formData.issuerOrganization?.hasAPI) {
         try {
           // This is where backend engineers will integrate with various APIs
-          const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name)
+          // const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name) // Removed unused variable
           const verificationData = await verifyCredentialWithAPI({
             organization: formData.issuerOrganization.name,
             skillName: formData.skillName,
@@ -619,21 +614,21 @@ export default function MintPage() {
   }
 
   // Helper function for API endpoint mapping (for backend integration)
-  const getAPIEndpoint = (organizationName: string): string => {
-    const apiEndpoints: Record<string, string> = {
-      "GitHub": "/api/verify/github",
-      "Coursera": "/api/verify/coursera", 
-      "Udemy": "/api/verify/udemy",
-      "Amazon Web Services (AWS)": "/api/verify/aws",
-      "Microsoft": "/api/verify/microsoft",
-      "Google Cloud Platform": "/api/verify/gcp",
-      // Add more as needed
-    }
-    return apiEndpoints[organizationName] || "/api/verify/manual"
-  }
+  // const getAPIEndpoint = (organizationName: string): string => { // Removed unused function
+  //   const apiEndpoints: Record<string, string> = {
+  //     "GitHub": "/api/verify/github",
+  //     "Coursera": "/api/verify/coursera", 
+  //     "Udemy": "/api/verify/udemy",
+  //     "Amazon Web Services (AWS)": "/api/verify/aws",
+  //     "Microsoft": "/api/verify/microsoft",
+  //     "Google Cloud Platform": "/api/verify/gcp",
+  //     // Add more as needed
+  //   }
+  //   return apiEndpoints[organizationName] || "/api/verify/manual"
+  // }
 
   // Helper function for API verification (for backend integration)
-  const verifyCredentialWithAPI = async (data: any): Promise<{ isValid: boolean; verificationData: any }> => {
+  const verifyCredentialWithAPI = async (_data: Record<string, unknown>): Promise<{ isValid: boolean; verificationData: Record<string, unknown> }> => {
     // This function will be implemented by backend engineers
     // It should return { isValid: boolean, verificationData: object }
     return new Promise((resolve) => {
@@ -662,7 +657,7 @@ export default function MintPage() {
           text: "Check out my new verified skill credential on Skill Passport!",
           url: shareUrl,
         })
-      } catch (error) {
+      } catch {
         // User cancelled sharing
       }
     } else {
@@ -694,7 +689,7 @@ export default function MintPage() {
     })
   }
 
-  const updateFormData = (field: keyof FormData, value: any) => {
+  const updateFormData = (field: keyof FormData, value: string | Organization | null) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -859,7 +854,7 @@ export default function MintPage() {
                         <Alert className="border-blue-200 bg-blue-50">
                           <Shield className="h-4 w-4 text-blue-600" />
                           <AlertDescription className="text-blue-700">
-                            <strong>Auto-Verification Available:</strong> We'll automatically verify this credential with {formData.issuerOrganization.name} during minting.
+                              <strong>Auto-Verification Available:</strong> We&apos;ll automatically verify this credential with {formData.issuerOrganization.name} during minting.
                           </AlertDescription>
                         </Alert>
                       )}

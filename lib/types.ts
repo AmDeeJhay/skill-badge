@@ -14,7 +14,7 @@ export interface InjectedExtension {
   accounts: {
     get: () => Promise<InjectedAccountWithMeta[]>
   }
-  signer: any
+  signer: Record<string, unknown>
 }
 
 export interface WalletState {
@@ -40,13 +40,13 @@ export interface VerificationMethod {
   type: string
   controller: string
   publicKeyMultibase?: string
-  publicKeyJwk?: any
+  publicKeyJwk?: Record<string, unknown>
 }
 
 export interface CredentialSubject {
   id: string
   type: string[]
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface VerifiableCredential {
@@ -106,7 +106,7 @@ export interface GitHubUser {
 export interface VerificationResult {
   isValid: boolean
   confidence: number
-  evidence: any
+  evidence: Record<string, unknown>
   errors: string[]
   warnings: string[]
 }

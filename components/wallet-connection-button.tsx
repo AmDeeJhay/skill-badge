@@ -15,7 +15,7 @@ import { WalletSelectionModal } from "@/components/wallet-selection-modal"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
 import { Wallet, ChevronDown, Copy, LogOut, Check } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { useRouter, usePathname } from "next/navigation"
+// import { useRouter, usePathname } from "next/navigation" // Removed unused imports
 
 interface WalletConnectionButtonProps {
   variant?: "default" | "outline"
@@ -28,8 +28,8 @@ export function WalletConnectionButton({ variant = "outline", size = "default", 
     usePolkadotWallet()
 
   const { toast } = useToast()
-  const router = useRouter()
-  const pathname = usePathname()
+  // const router = useRouter() // Removed unused
+  // const pathname = usePathname() // Removed unused
 
   const handleConnectWallet = () => {
     setShowWalletModal(true)

@@ -26,11 +26,22 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 
+interface CredentialData {
+  id: string;
+  skillName: string;
+  issuerName: string;
+  issueDate: string;
+  description?: string;
+  verified: boolean;
+  transactionHash?: string;
+  badgeColor: string;
+}
+
 export default function CredentialPage() {
   const params = useParams()
   const { toast } = useToast()
   const credentialId = params.id as string
-  const [credential, setCredential] = useState<any>(null)
+  const [credential, setCredential] = useState<CredentialData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
@@ -64,7 +75,7 @@ export default function CredentialPage() {
           text: `Check out this verified ${credential?.skillName} credential from ${credential?.issuerName}`,
           url: shareUrl,
         })
-      } catch (error) {
+      } catch {
         // User cancelled sharing
       }
     } else {
@@ -146,7 +157,7 @@ export default function CredentialPage() {
             <AlertCircle className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
             <h1 className="text-2xl font-bold text-foreground mb-4">Credential Not Found</h1>
             <p className="text-muted-foreground mb-6">
-              The credential you're looking for doesn't exist or may have been removed.
+              The credential you&apos;re looking for doesn&apos;t exist or may have been removed.
             </p>
             <Button asChild>
               <Link href="/">Return Home</Link>

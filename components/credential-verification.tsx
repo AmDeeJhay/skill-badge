@@ -30,8 +30,8 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
   const [credentialIdInput, setCredentialIdInput] = useState(credentialId || "")
   const [credentialJson, setCredentialJson] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<any>(null)
-  const [credential, setCredential] = useState<any>(null)
+  const [verificationResult, setVerificationResult] = useState<Record<string, unknown> | null>(null)
+  const [credential, setCredential] = useState<Record<string, unknown> | null>(null)
 
   const handleVerifyById = async () => {
     if (!credentialIdInput.trim()) {
@@ -46,11 +46,11 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
     setIsVerifying(true)
     try {
       // Try to get credential from backend first
-      let cred: any = null
-      let backendResult: any = null
+      let cred: Record<string, unknown> | null = null
+      let backendResult: Record<string, unknown> | null = null
 
       try {
-        const backendCredential = await apiClient.getCredential(credentialIdInput) as any
+        const backendCredential = await apiClient.getCredential(credentialIdInput) as Record<string, unknown>
         cred = backendCredential.data
         backendResult = backendCredential
       } catch (backendError) {
@@ -72,7 +72,7 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
       
       // If we have backend data, enhance the result
       if (backendResult) {
-        (result as any).evidence = {
+        (result as Record<string, unknown>).evidence = {
           backend: backendResult,
           source: 'backend'
         }
@@ -160,7 +160,7 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
       // Try backend first
       let status: string | null = null
       try {
-        const statusResult = await apiClient.getCredentialStatus(credentialIdInput) as any
+        const statusResult = await apiClient.getCredentialStatus(credentialIdInput) as Record<string, unknown>
         status = statusResult.data.status
       } catch (backendError) {
         console.warn('Backend status check failed, trying local:', backendError)

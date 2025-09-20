@@ -70,7 +70,7 @@ export interface LinkedInExperience {
 export interface VerificationResult {
   isValid: boolean
   confidence: number
-  evidence: any
+  evidence: Record<string, unknown>
   errors: string[]
   warnings: string[]
 }
@@ -148,7 +148,7 @@ export class GitHubIntegration {
       const errors: string[] = []
       const warnings: string[] = []
       let confidence = 0
-      const evidence: any = {}
+      const evidence: Record<string, unknown> = {}
 
       // Get user profile
       const profile = await this.getUserProfile(username)
@@ -349,7 +349,7 @@ export class VerificationServiceManager {
     linkedin?: VerificationResult
     combined: VerificationResult
   }> {
-    const results: any = {}
+    const results: Record<string, unknown> = {}
     const allErrors: string[] = []
     const allWarnings: string[] = []
 
@@ -377,8 +377,8 @@ export class VerificationServiceManager {
 
     // Calculate combined confidence
     const confidences = Object.values(results)
-      .filter((result: any) => result && typeof result.confidence === 'number')
-      .map((result: any) => result.confidence)
+      .filter((result: Record<string, unknown>) => result && typeof result.confidence === 'number')
+      .map((result: Record<string, unknown>) => result.confidence)
     
     const combinedConfidence = confidences.length > 0 
       ? confidences.reduce((sum, conf) => sum + conf, 0) / confidences.length
@@ -416,11 +416,11 @@ export class VerificationServiceManager {
     console.log('Verification logged:', logEntry)
   }
 
-  getVerificationLog(): Array<any> {
+  getVerificationLog(): Array<Record<string, unknown>> {
     return [...this.verificationLog]
   }
 
-  getVerificationLogForUser(userId: string): Array<any> {
+  getVerificationLogForUser(userId: string): Array<Record<string, unknown>> {
     return this.verificationLog.filter(log => log.userId === userId)
   }
 }

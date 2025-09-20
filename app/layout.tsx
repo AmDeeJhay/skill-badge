@@ -2,7 +2,7 @@
 
 import type React from "react"
 // import type { Metadata } from "next"
-import { Poppins } from "next/font/google"
+// import { Poppins } from "next/font/google" // Removed unused import
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { Sidebar } from "@/components/sidebar"

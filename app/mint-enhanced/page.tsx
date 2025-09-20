@@ -24,8 +24,8 @@ import {
   Zap,
   Database,
   Key,
-  Timer,
-  RefreshCw,
+  // Timer,
+  // RefreshCw,
   Settings
 } from "lucide-react"
 import { VerifiableCredential } from "@/lib/w3c-vc"
@@ -44,7 +44,7 @@ interface Feature {
 }
 
 interface InfoCardProps {
-  icon: React.ReactElement<any>;
+  icon: React.ReactElement<Record<string, unknown>>;
   title: string;
   description: string;
   features: Feature[];

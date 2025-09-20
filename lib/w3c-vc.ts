@@ -14,13 +14,13 @@ export interface VerificationMethod {
   type: string
   controller: string
   publicKeyMultibase?: string
-  publicKeyJwk?: any
+  publicKeyJwk?: Record<string, unknown>
 }
 
 export interface CredentialSubject {
   id: string
   type: string[]
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export interface VerifiableCredential {
