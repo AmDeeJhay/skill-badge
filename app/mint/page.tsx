@@ -564,12 +564,7 @@ export default function MintPage() {
         try {
           // This is where backend engineers will integrate with various APIs
           // const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name) // Removed unused variable
-          const verificationData = await verifyCredentialWithAPI({
-            organization: formData.issuerOrganization.name,
-            skillName: formData.skillName,
-            evidenceUrl: formData.evidenceUrl,
-            // Add other relevant data for API verification
-          })
+          const verificationData = await verifyCredentialWithAPI()
           
           if (!verificationData.isValid) {
             toast({
@@ -591,7 +586,7 @@ export default function MintPage() {
       if (newCredential) {
         const mockCredential: MintedCredential = {
           credentialId: newCredential.id,
-          transactionHash: newCredential.vcId
+          transactionHash: newCredential.transactionHash || 'mock-transaction-hash'
         }
         setMintedCredential(mockCredential)
         setShowSuccessModal(true)
@@ -628,7 +623,7 @@ export default function MintPage() {
   // }
 
   // Helper function for API verification (for backend integration)
-  const verifyCredentialWithAPI = async (_data: Record<string, unknown>): Promise<{ isValid: boolean; verificationData: Record<string, unknown> }> => {
+  const verifyCredentialWithAPI = async (): Promise<{ isValid: boolean; verificationData: Record<string, unknown> }> => {
     // This function will be implemented by backend engineers
     // It should return { isValid: boolean, verificationData: object }
     return new Promise((resolve) => {

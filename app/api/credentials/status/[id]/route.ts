@@ -4,10 +4,10 @@ import { credentialManager } from '@/lib/w3c-vc'
 // GET /api/credentials/status/[id] - Get credential status
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     if (!id) {
       return NextResponse.json(

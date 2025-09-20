@@ -143,11 +143,11 @@ export class CredentialIssuer {
     const credentialSubject: SkillCredentialSubject = {
       id: subjectDID,
       type: ['SkillCredential'],
-      skillName: skillData.skillName,
-      skillLevel: skillData.skillLevel,
-      verifierDID: skillData.verifierDID,
-      evidenceUrl: skillData.evidenceUrl,
-      description: skillData.description
+      skillName: skillData.skillName as string,
+      skillLevel: skillData.skillLevel as 'beginner' | 'intermediate' | 'advanced' | 'expert',
+      verifierDID: skillData.verifierDID as string,
+      evidenceUrl: skillData.evidenceUrl as string,
+      description: skillData.description as string
     }
 
     // Generate proof first before creating credential
@@ -194,13 +194,13 @@ export class CredentialIssuer {
     const credentialSubject: ExperienceCredentialSubject = {
       id: subjectDID,
       type: ['ExperienceCredential'],
-      projectTitle: experienceData.projectTitle,
-      projectDescription: experienceData.projectDescription,
-      verifierDID: experienceData.verifierDID,
-      startDate: experienceData.startDate,
-      endDate: experienceData.endDate,
-      technologies: experienceData.technologies,
-      evidenceUrl: experienceData.evidenceUrl
+      projectTitle: experienceData.projectTitle as string,
+      projectDescription: experienceData.projectDescription as string,
+      verifierDID: experienceData.verifierDID as string,
+      startDate: experienceData.startDate as string,
+      endDate: experienceData.endDate as string,
+      technologies: experienceData.technologies as string[],
+      evidenceUrl: experienceData.evidenceUrl as string
     }
 
     // Generate proof first before creating credential
@@ -336,7 +336,7 @@ export class CredentialVerifier {
 
       // Mock proof verification - in real implementation, this would verify the signature
       return true
-    } catch (error) {
+    } catch {
       return false
     }
   }

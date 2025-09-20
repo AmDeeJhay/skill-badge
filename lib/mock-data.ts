@@ -55,7 +55,9 @@ export const mockCredentials: Credential[] = [
 
 export const getCredentialsByAddress = (address: string): Credential[] => {
   // In a real app, this would fetch from blockchain/database
-  return getAllCredentials(address)
+  // For now, returning all credentials since we don't have address-specific filtering
+  console.log('Fetching credentials for address:', address)
+  return getAllCredentials()
 }
 
 // Simulated storage for newly minted credentials
@@ -72,13 +74,13 @@ export const addMintedCredential = (credential: Omit<Credential, 'id'>) => {
 }
 
 // Get all credentials including minted ones
-export const getAllCredentials = (_address: string): Credential[] => {
+export const getAllCredentials = (/* _address: string */): Credential[] => {
   return [...mintedCredentials, ...mockCredentials]
 }
 
 // Get recent credentials (last 3-4)
-export const getRecentCredentials = (_address: string, limit: number = 4): Credential[] => {
-  const allCredentials = getAllCredentials(_address)
+export const getRecentCredentials = (/* _address: string, */ limit: number = 4): Credential[] => {
+  const allCredentials = getAllCredentials()
   return allCredentials
     .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())
     .slice(0, limit)

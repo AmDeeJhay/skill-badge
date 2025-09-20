@@ -48,7 +48,14 @@ export default function CredentialPage() {
     const fetchCredential = async () => {
       try {
         const cred = await dataService.getCredential(credentialId)
-        setCredential(cred)
+        if (cred) {
+          // Credential already has proper typing from the conversion function
+          const normalizedCred = {
+            ...cred,
+            description: cred.description || ''
+          }
+          setCredential(normalizedCred)
+        }
       } catch (error) {
         console.error('Failed to fetch credential:', error)
         toast({

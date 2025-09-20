@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { CredentialBadge } from "@/components/credential-badge"
 import { WalletStatusIndicator } from "@/components/wallet-status-indicator"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
-import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service"
-import { Search, Share2, Filter, Award, Calendar, Shield, Copy, ExternalLink, TrendingUp, Users, Globe, Zap } from "lucide-react"
+// import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service" // Removed unused imports
+import { Search, Share2, Filter, Award, Calendar, Shield, Copy, TrendingUp, Users, Globe, Zap } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 // Type definitions
@@ -41,7 +41,7 @@ function GlowingCard({ children, className = "", glowColor = "blue" }: GlowingCa
 }
 
 export default function ProfilePage() {
-  const { isConnected, selectedAccount, formatAddress, credentials, stats, isLoadingCredentials } = usePolkadotWallet()
+  const { isConnected, selectedAccount, formatAddress, credentials, stats } = usePolkadotWallet()
   const { toast } = useToast()
   const [searchQuery, setSearchQuery] = useState("")
   const [filterBy, setFilterBy] = useState<"all" | "verified" | "recent">("all")
@@ -98,7 +98,7 @@ export default function ProfilePage() {
           text: "Check out my verified skills and credentials on Skill Passport",
           url: profileUrl,
         })
-      } catch (error) {
+      } catch {
         // User cancelled sharing
       }
     } else {

@@ -4,10 +4,10 @@ import { credentialManager } from '@/lib/w3c-vc'
 // GET /api/credentials/[userId] - Get all credentials for a user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
+  { params }: { params: Promise<{ userId: string }> }
 ) {
   try {
-    const { userId } = params
+    const { userId } = await params
 
     if (!userId) {
       return NextResponse.json(

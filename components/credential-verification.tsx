@@ -8,8 +8,42 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
-import { credentialVerifier, credentialManager } from "@/lib/w3c-vc"
+import { credentialVerifier, credentialManager, type VerifiableCredential } from "@/lib/w3c-vc"
 import { apiClient } from "@/lib/backend-integration"
+type CredentialVerificationResult = {
+  isValid: boolean
+  errors: string[]
+  warnings: string[]
+}
+
+type BackendCredentialResponse = {
+  data: VerifiableCredential
+}
+
+type BackendStatusResponse = {
+  data: {
+    status: string
+  }
+}
+
+type CredentialIssuer = {
+  id: string
+  name?: string
+} | string
+
+type CredentialStatus = {
+  status: string
+  type?: string
+  id?: string
+}
+
+type CredentialProof = {
+  type: string
+  created: string
+  verificationMethod: string
+  proofPurpose: string
+  proofValue?: string
+}
 import { 
   Loader2, 
   CheckCircle, 
@@ -30,8 +64,8 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
   const [credentialIdInput, setCredentialIdInput] = useState(credentialId || "")
   const [credentialJson, setCredentialJson] = useState("")
   const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<Record<string, unknown> | null>(null)
-  const [credential, setCredential] = useState<Record<string, unknown> | null>(null)
+  const [verificationResult, setVerificationResult] = useState<CredentialVerificationResult | null>(null)
+  const [credential, setCredential] = useState<VerifiableCredential | null>(null)
 
   const handleVerifyById = async () => {
     if (!credentialIdInput.trim()) {
@@ -46,13 +80,11 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
     setIsVerifying(true)
     try {
       // Try to get credential from backend first
-      let cred: Record<string, unknown> | null = null
-      let backendResult: Record<string, unknown> | null = null
+      let cred: VerifiableCredential | null = null
 
       try {
-        const backendCredential = await apiClient.getCredential(credentialIdInput) as Record<string, unknown>
+        const backendCredential = await apiClient.getCredential(credentialIdInput) as BackendCredentialResponse
         cred = backendCredential.data
-        backendResult = backendCredential
       } catch (backendError) {
         console.warn('Backend credential not found, trying local:', backendError)
       }
@@ -70,13 +102,8 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
       // Verify the credential
       const result = await credentialVerifier.verifyCredential(cred)
       
-      // If we have backend data, enhance the result
-      if (backendResult) {
-        (result as Record<string, unknown>).evidence = {
-          backend: backendResult,
-          source: 'backend'
-        }
-      }
+      // Note: Backend data could be used for additional verification context
+      // if needed, but the basic verification result doesn't include evidence
 
       setVerificationResult(result)
 
@@ -116,7 +143,7 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
     setIsVerifying(true)
     try {
       // Parse credential JSON
-      const cred = JSON.parse(credentialJson)
+      const cred = JSON.parse(credentialJson) as VerifiableCredential
       setCredential(cred)
 
       // Verify the credential
@@ -160,7 +187,7 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
       // Try backend first
       let status: string | null = null
       try {
-        const statusResult = await apiClient.getCredentialStatus(credentialIdInput) as Record<string, unknown>
+        const statusResult = await apiClient.getCredentialStatus(credentialIdInput) as BackendStatusResponse
         status = statusResult.data.status
       } catch (backendError) {
         console.warn('Backend status check failed, trying local:', backendError)
@@ -181,9 +208,9 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
         title: "Credential Status",
         description: `Status: ${status.charAt(0).toUpperCase() + status.slice(1)}`
       })
-    } catch (error) {
+    } catch {
       toast({
-        // title: "Error",
+        title: "Error",
         description: "Failed to check credential status",
         variant: "destructive"
       })
@@ -381,18 +408,22 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Type</Label>
-                <p className="text-sm text-muted-foreground">{credential.type.join(', ')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {Array.isArray(credential.type) ? credential.type.join(', ') : String(credential.type)}
+                </p>
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Issuer</Label>
                 <p className="text-sm text-muted-foreground font-mono">
-                  {typeof credential.issuer === 'string' ? credential.issuer : credential.issuer.id}
+                  {typeof credential.issuer === 'string' 
+                    ? credential.issuer 
+                    : (credential.issuer as Exclude<CredentialIssuer, string>).id || 'Unknown'}
                 </p>
               </div>
               <div className="space-y-2">
                 <Label className="text-sm font-medium">Issuance Date</Label>
                 <p className="text-sm text-muted-foreground">
-                  {new Date(credential.issuanceDate).toLocaleDateString()}
+                  {credential.issuanceDate ? new Date(credential.issuanceDate).toLocaleDateString() : 'Unknown'}
                 </p>
               </div>
               {credential.expirationDate && (
@@ -406,9 +437,9 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
               {credential.credentialStatus && (
                 <div className="space-y-2">
                   <Label className="text-sm font-medium">Status</Label>
-                  <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(credential.credentialStatus.status)}`}>
-                    {getStatusIcon(credential.credentialStatus.status)}
-                    {credential.credentialStatus.status.charAt(0).toUpperCase() + credential.credentialStatus.status.slice(1)}
+                  <div className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor((credential.credentialStatus as CredentialStatus).status || 'unknown')}`}>
+                    {getStatusIcon((credential.credentialStatus as CredentialStatus).status || 'unknown')}
+                    {((credential.credentialStatus as CredentialStatus).status || 'unknown').charAt(0).toUpperCase() + ((credential.credentialStatus as CredentialStatus).status || 'unknown').slice(1)}
                   </div>
                 </div>
               )}
@@ -423,25 +454,27 @@ export function CredentialVerification({ credentialId }: CredentialVerificationP
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Proof</Label>
-              <div className="p-3 bg-muted rounded-md">
-                <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                  <div>
-                    <strong>Type:</strong> {credential.proof.type}
-                  </div>
-                  <div>
-                    <strong>Created:</strong> {new Date(credential.proof.created).toLocaleString()}
-                  </div>
-                  <div>
-                    <strong>Verification Method:</strong> {credential.proof.verificationMethod}
-                  </div>
-                  <div>
-                    <strong>Proof Purpose:</strong> {credential.proof.proofPurpose}
+            {credential.proof && (
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Proof</Label>
+                <div className="p-3 bg-muted rounded-md">
+                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                    <div>
+                      <strong>Type:</strong> {(credential.proof as CredentialProof).type || 'Unknown'}
+                    </div>
+                    <div>
+                      <strong>Created:</strong> {(credential.proof as CredentialProof).created ? new Date((credential.proof as CredentialProof).created).toLocaleString() : 'Unknown'}
+                    </div>
+                    <div>
+                      <strong>Verification Method:</strong> {(credential.proof as CredentialProof).verificationMethod || 'Unknown'}
+                    </div>
+                    <div>
+                      <strong>Proof Purpose:</strong> {(credential.proof as CredentialProof).proofPurpose || 'Unknown'}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </CardContent>
         </Card>
       )}

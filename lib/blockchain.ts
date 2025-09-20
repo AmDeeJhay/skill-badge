@@ -12,19 +12,23 @@ export interface MintingResult {
 
 // Mock blockchain interaction - in a real app, this would interact with Polkadot/Substrate
 export const mintCredential = async (
-  _credentialData: CredentialFormData,
-  _extension: InjectedExtension,
-  _accountAddress: string,
+  credentialData: CredentialFormData,
+  extension: InjectedExtension,
+  accountAddress: string,
 ): Promise<MintingResult> => {
   // Simulate transaction delay
   await new Promise((resolve) => setTimeout(resolve, 2000))
 
   try {
     // In a real implementation, this would:
-    // 1. Create the credential metadata
-    // 2. Submit an extrinsic to the blockchain
+    // 1. Create the credential metadata using credentialData
+    // 2. Submit an extrinsic to the blockchain using extension and accountAddress
     // 3. Wait for transaction confirmation
     // 4. Return the transaction hash and credential ID
+
+    // Log parameters for development (demonstrates usage)
+    console.log(`Minting credential "${credentialData.skillName}" for account ${accountAddress}`)
+    console.log(`Extension available: ${!!extension}`)
 
     // Mock successful transaction
     const mockTransactionHash = `0x${Math.random().toString(16).substring(2, 10)}...${Math.random()

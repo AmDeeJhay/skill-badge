@@ -349,16 +349,21 @@ export class VerificationServiceManager {
     linkedin?: VerificationResult
     combined: VerificationResult
   }> {
-    const results: Record<string, unknown> = {}
+    const results: {
+      github?: VerificationResult
+      linkedin?: VerificationResult
+      combined?: VerificationResult
+    } = {}
     const allErrors: string[] = []
     const allWarnings: string[] = []
 
     // Verify with GitHub if username provided
     if (githubUsername) {
       try {
-        results.github = await this.verifySkillWithGitHub(githubUsername, skillName)
-        allErrors.push(...results.github.errors)
-        allWarnings.push(...results.github.warnings)
+        const githubResult = await this.verifySkillWithGitHub(githubUsername, skillName)
+        results.github = githubResult
+        allErrors.push(...githubResult.errors)
+        allWarnings.push(...githubResult.warnings)
       } catch (error) {
         allErrors.push(`GitHub verification failed: ${error}`)
       }
@@ -367,21 +372,22 @@ export class VerificationServiceManager {
     // Verify with LinkedIn if profile ID provided
     if (linkedinProfileId) {
       try {
-        results.linkedin = await this.verifySkillWithLinkedIn(linkedinProfileId, skillName)
-        allErrors.push(...results.linkedin.errors)
-        allWarnings.push(...results.linkedin.warnings)
+        const linkedinResult = await this.verifySkillWithLinkedIn(linkedinProfileId, skillName)
+        results.linkedin = linkedinResult
+        allErrors.push(...linkedinResult.errors)
+        allWarnings.push(...linkedinResult.warnings)
       } catch (error) {
         allErrors.push(`LinkedIn verification failed: ${error}`)
       }
     }
 
     // Calculate combined confidence
-    const confidences = Object.values(results)
-      .filter((result: Record<string, unknown>) => result && typeof result.confidence === 'number')
-      .map((result: Record<string, unknown>) => result.confidence)
+    const verificationResults = [results.github, results.linkedin].filter(
+      (result): result is VerificationResult => result !== undefined
+    )
     
-    const combinedConfidence = confidences.length > 0 
-      ? confidences.reduce((sum, conf) => sum + conf, 0) / confidences.length
+    const combinedConfidence = verificationResults.length > 0 
+      ? verificationResults.reduce((sum, result) => sum + result.confidence, 0) / verificationResults.length
       : 0
 
     results.combined = {
@@ -392,7 +398,11 @@ export class VerificationServiceManager {
       warnings: allWarnings
     }
 
-    return results
+    return {
+      github: results.github,
+      linkedin: results.linkedin,
+      combined: results.combined!
+    }
   }
 
   private logVerification(

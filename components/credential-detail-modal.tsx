@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { useToast } from "@/hooks/use-toast"
-import type { Credential } from "@/lib/data-service"
+import type { Credential } from "@/lib/mock-data"
 import { CheckCircle, Share2, ExternalLink, Copy, Download, Calendar, User, Award, Shield, Hash } from "lucide-react"
 
 interface CredentialDetailModalProps {
@@ -36,7 +36,7 @@ export function CredentialDetailModal({ credential, children }: CredentialDetail
           text: `Check out my verified ${credential.skillName} credential from ${credential.issuerName}`,
           url: shareUrl,
         })
-      } catch (error) {
+      } catch {
         // User cancelled sharing
       }
     } else {

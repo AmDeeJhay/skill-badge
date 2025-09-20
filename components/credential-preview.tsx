@@ -4,10 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { CheckCircle, ExternalLink, Share2, Award } from "lucide-react"
-import type { CredentialFormData } from "@/lib/validation"
+import type { CredentialFormData, SkillCredentialData } from "@/lib/validation"
 
 interface CredentialPreviewProps {
-  credentialData?: CredentialFormData
+  credentialData?: CredentialFormData | SkillCredentialData
   skillName?: string
   issuer?: string
   level?: string
@@ -35,9 +35,9 @@ export function CredentialPreview({
 }: CredentialPreviewProps) {
   // Use credentialData if provided, otherwise use individual props
   const skill = credentialData?.skillName || skillName || "Your Skill"
-  const issuerName = credentialData?.issuerName || issuer || "Issuing Organization"
-  const skillLevel = credentialData?.skillLevel || level || ""
-  const issued = credentialData?.issueDate || issueDate || new Date().toISOString().split('T')[0]
+  const issuerName = ('issuerName' in (credentialData || {})) ? (credentialData as CredentialFormData).issuerName : issuer || "Issuing Organization"
+  const skillLevel = 'skillLevel' in (credentialData || {}) ? (credentialData as SkillCredentialData).skillLevel : level || ""
+  const issued = ('issueDate' in (credentialData || {})) ? (credentialData as CredentialFormData).issueDate : issueDate || new Date().toISOString().split('T')[0]
   const desc = credentialData?.description || description || ""
 
   const badgeColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-pink-500", "bg-orange-500", "bg-cyan-500"]

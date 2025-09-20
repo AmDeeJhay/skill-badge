@@ -1,4 +1,4 @@
-import cron from 'node-cron'
+import * as cron from 'node-cron'
 import { credentialManager } from '@/lib/w3c-vc'
 
 // Scheduled job to check for expired credentials daily at midnight

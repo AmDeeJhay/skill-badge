@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import type { InjectedAccountWithMeta, InjectedExtension, WalletState } from "@/lib/types"
-import { getCredentialsByAddress, getCredentialStats } from "@/lib/data-service"
+import { getCredentialsByAddress } from "@/lib/data-service"
+import { getCredentialStats } from "@/lib/mock-data"
 
 declare global {
   interface Window {

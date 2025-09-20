@@ -54,7 +54,7 @@ export function MintCredentialForm({ onSuccess }: MintCredentialFormProps) {
     try {
       const fee = await estimateTransactionFee()
       setEstimatedFee(fee)
-    } catch (error) {
+    } catch {
       toast({
         title: "Fee estimation failed",
         description: "Could not estimate transaction fee. Please try again.",

@@ -83,13 +83,10 @@ export const convertApiCredentialToFrontend = (apiCred: ApiCredential) => ({
   skillName: apiCred.skill,
   issuerName: apiCred.organization,
   issueDate: apiCred.issuanceDate.split('T')[0], // Convert to YYYY-MM-DD format
-  description: apiCred.metadata?.description || '',
+  description: apiCred.metadata?.description as string || undefined,
   badgeColor: getBadgeColor(apiCred.skill),
   verified: apiCred.status === 'VALID',
   transactionHash: apiCred.vcId,
-  status: apiCred.status,
-  expirationDate: apiCred.expirationDate,
-  metadata: apiCred.metadata,
 });
 
 // Get badge color based on skill name
@@ -186,7 +183,7 @@ export const dataService = {
     }
   },
 
-  async updateCredential(id: string, credentialData: Record<string, unknown>, token?: string): Promise<ApiCredential | null> {
+  async updateCredential(id: string, credentialData: Record<string, unknown>, token?: string): Promise<ReturnType<typeof convertApiCredentialToFrontend> | null> {
     try {
       const response = await apiClient.updateCredential(id, credentialData, token) as ApiCredentialResponse;
       return convertApiCredentialToFrontend(response.data);
@@ -312,7 +309,7 @@ export const dataService = {
   async getHealth(): Promise<Record<string, unknown> | null> {
     try {
       const response = await apiClient.getHealth();
-      return response;
+      return response as Record<string, unknown>;
     } catch (error) {
       console.error('Failed to fetch health status:', error);
       return null;
@@ -325,20 +322,7 @@ export const getCredentialsByAddress = async (address: string) => {
   return await dataService.getUserCredentials(address);
 };
 
-export const getCredentialStats = (credentials: ApiCredential[]) => {
-  const now = new Date();
-  const thisMonth = credentials.filter((c) => {
-    const issueDate = new Date(c.issueDate);
-    return issueDate.getMonth() === now.getMonth() && issueDate.getFullYear() === now.getFullYear();
-  }).length;
-
-  return {
-    total: credentials.length,
-    verified: credentials.filter((c) => c.verified).length,
-    thisMonth,
-    skillAreas: new Set(credentials.map(c => c.skillName.split(' ')[0])).size,
-  };
-};
+// Note: getCredentialStats is imported from mock-data.ts for frontend credential format
 
 export const getRecentCredentials = async (address: string, limit = 4) => {
   const credentials = await dataService.getUserCredentials(address);

@@ -23,6 +23,7 @@ import {
 } from "@/lib/w3c-vc"
 import { verificationServiceManager } from "@/lib/external-integrations"
 import { backendIntegration } from "@/lib/backend-integration"
+import { type VerificationResult } from "@/lib/types"
 import { 
   Loader2, 
   CheckCircle, 
@@ -48,9 +49,9 @@ const isSkillCredential = (data: SkillCredentialData | ExperienceCredentialData)
   return 'skillName' in data;
 }
 
-const isExperienceCredential = (data: SkillCredentialData | ExperienceCredentialData): data is ExperienceCredentialData => {
-  return 'projectTitle' in data;
-}
+// const isExperienceCredential = (data: SkillCredentialData | ExperienceCredentialData): data is ExperienceCredentialData => {
+//   return 'projectTitle' in data;
+// }
 
 // Backend credential response type
 interface BackendCredentialResponse {
@@ -84,7 +85,11 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<Record<string, unknown> | null>(null)
+  const [verificationResult, setVerificationResult] = useState<{
+    github?: VerificationResult
+    linkedin?: VerificationResult
+    combined: VerificationResult
+  } | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -149,7 +154,7 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
           variant: "destructive"
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Verification Error",
         description: "Failed to verify skill with external sources",
@@ -177,7 +182,7 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
     const issuerDID = didManager.generateDID()
 
     // Create issuer DID document
-    const issuerDocument = didManager.createDIDDocument(issuerDID, "mock-public-key")
+    // const issuerDocument = didManager.createDIDDocument(issuerDID, "mock-public-key") // Removed unused variable
 
     const credentialIssueData: CredentialIssueData = {
       credentialType,

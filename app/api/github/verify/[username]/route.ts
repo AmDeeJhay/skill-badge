@@ -4,10 +4,10 @@ import { verificationServiceManager } from '@/lib/external-integrations'
 // GET /api/github/verify/[username] - Verify GitHub user skills
 export async function GET(
   request: NextRequest,
-  { params }: { params: { username: string } }
+  { params }: { params: Promise<{ username: string }> }
 ) {
   try {
-    const { username } = params
+    const { username } = await params
     const { searchParams } = new URL(request.url)
     const skillName = searchParams.get('skill')
 

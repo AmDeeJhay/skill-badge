@@ -12,7 +12,7 @@ import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
 import { WalletStatusIndicator } from "@/components/wallet-status-indicator"
 import { CredentialBadge } from "@/components/credential-badge"
 
-function GlowingCard({ children, className = "", glowColor = "blue" as const }) {
+function GlowingCard({ children, className = "", glowColor = "blue" as const }: { children: React.ReactNode; className?: string; glowColor?: "blue" | "black" | "indigo" }) {
   const glowClasses = {
     blue: "shadow-blue-500/20 hover:shadow-blue-500/40 border-blue-500/20 hover:border-blue-500/40",
     black: "shadow-black/20 hover:shadow-black/40 border-gray-800 hover:border-gray-700",
