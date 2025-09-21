@@ -5,39 +5,32 @@ import { usePathname } from "next/navigation"
 import { Sidebar } from "@/components/sidebar"
 import { useEffect, useState } from "react"
 
-interface ClientLayoutProps {
+interface LayoutWrapperProps {
   children: React.ReactNode
 }
 
-export function ClientLayout({ children }: ClientLayoutProps) {
+export function LayoutWrapper({ children }: LayoutWrapperProps) {
   const [mounted, setMounted] = useState(false)
-  const pathname = usePathname()
-  
+  const [pathname, setPathname] = useState("/")
+
   useEffect(() => {
     setMounted(true)
+    // Get pathname after component mounts to avoid hydration mismatch
+    if (typeof window !== "undefined") {
+      setPathname(window.location.pathname)
+    }
   }, [])
-
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return (
-      <div className="h-full relative">
-        <main>
-          {children}
-        </main>
-      </div>
-    )
-  }
 
   const isLandingPage = pathname === "/"
 
   return (
     <div className="h-full relative">
-      {!isLandingPage && (
+      {mounted && !isLandingPage && (
         <div className="hidden h-full md:flex md:w-72 md:flex-col md:fixed md:inset-y-0 z-[80] bg-white">
           <Sidebar />
         </div>
       )}
-      <main className={!isLandingPage ? "md:pl-72" : ""}>
+      <main className={mounted && !isLandingPage ? "md:pl-72" : ""}>
         {children}
       </main>
     </div>
