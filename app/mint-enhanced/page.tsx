@@ -370,21 +370,17 @@ export default function EnhancedMintPage() {
 
                   <InfoCard
                     icon={<ExternalLink />}
-                    title="External Verification"
-                    description="API Integration Services"
+                    title="Verification Services"
+                    description="Credential Verification Infrastructure"
                     color="purple"
                     features={[
                       {
-                        title: "GitHub API Integration",
-                        description: "Verify developer achievements and repository contributions automatically"
-                      },
-                      {
-                        title: "LinkedIn API Integration",
-                        description: "Validate professional certifications and employment history"
+                        title: "Cryptographic Verification",
+                        description: "W3C Verifiable Credential signature validation"
                       },
                       {
                         title: "Modular Service Layer",
-                        description: "Extensible architecture supporting multiple verification providers"
+                        description: "Extensible architecture for future verification providers"
                       },
                       {
                         title: "Event Logging",

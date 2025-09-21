@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 // Type definitions
 interface Organization {
   name: string;
-  hasAPI: boolean;
+  // hasAPI: boolean; // Disabled for now
   type: string;
   category?: string;
 }
@@ -112,38 +112,38 @@ const ORGANIZATIONS = [
   {
     category: "Educational Platforms",
     organizations: [
-      { name: "Coursera", hasAPI: true, type: "course_completion" },
-      { name: "edX", hasAPI: true, type: "course_completion" },
-      { name: "Udemy", hasAPI: true, type: "course_completion" },
-      { name: "Khan Academy", hasAPI: false, type: "course_completion" },
-      { name: "LinkedIn Learning", hasAPI: true, type: "course_completion" },
-      { name: "Pluralsight", hasAPI: true, type: "skill_assessment" },
-      { name: "Codecademy", hasAPI: true, type: "course_completion" },
-      { name: "FreeCodeCamp", hasAPI: true, type: "certification" }
+      { name: "Coursera", /* hasAPI: true, */ type: "course_completion" },
+      { name: "edX", /* hasAPI: true, */ type: "course_completion" },
+      { name: "Udemy", /* hasAPI: true, */ type: "course_completion" },
+      { name: "Khan Academy", /* hasAPI: false, */ type: "course_completion" },
+      { name: "LinkedIn Learning", /* hasAPI: true, */ type: "course_completion" },
+      { name: "Pluralsight", /* hasAPI: true, */ type: "skill_assessment" },
+      { name: "Codecademy", /* hasAPI: true, */ type: "course_completion" },
+      { name: "FreeCodeCamp", /* hasAPI: true, */ type: "certification" }
     ]
   },
   {
     category: "Professional Certifications",
     organizations: [
-      { name: "Amazon Web Services (AWS)", hasAPI: true, type: "certification" },
-      { name: "Microsoft", hasAPI: true, type: "certification" },
-      { name: "Google Cloud Platform", hasAPI: true, type: "certification" },
-      { name: "Cisco", hasAPI: false, type: "certification" },
-      { name: "CompTIA", hasAPI: false, type: "certification" },
-      { name: "Oracle", hasAPI: true, type: "certification" },
-      { name: "Salesforce", hasAPI: true, type: "certification" },
-      { name: "Adobe", hasAPI: true, type: "certification" }
+      { name: "Amazon Web Services (AWS)", /* hasAPI: true, */ type: "certification" },
+      { name: "Microsoft", /* hasAPI: true, */ type: "certification" },
+      { name: "Google Cloud Platform", /* hasAPI: true, */ type: "certification" },
+      { name: "Cisco", /* hasAPI: false, */ type: "certification" },
+      { name: "CompTIA", /* hasAPI: false, */ type: "certification" },
+      { name: "Oracle", /* hasAPI: true, */ type: "certification" },
+      { name: "Salesforce", /* hasAPI: true, */ type: "certification" },
+      { name: "Adobe", /* hasAPI: true, */ type: "certification" }
     ]
   },
   {
     category: "Development Platforms",
     organizations: [
-      { name: "GitHub", hasAPI: true, type: "achievement" },
-      { name: "GitLab", hasAPI: true, type: "achievement" },
-      { name: "Stack Overflow", hasAPI: true, type: "reputation" },
-      { name: "HackerRank", hasAPI: true, type: "skill_assessment" },
-      { name: "LeetCode", hasAPI: false, type: "skill_assessment" },
-      { name: "Codewars", hasAPI: true, type: "skill_assessment" }
+      { name: "GitHub", /* hasAPI: true, */ type: "achievement" },
+      { name: "GitLab", /* hasAPI: true, */ type: "achievement" },
+      { name: "Stack Overflow", /* hasAPI: true, */ type: "reputation" },
+      { name: "HackerRank", /* hasAPI: true, */ type: "skill_assessment" },
+      { name: "LeetCode", /* hasAPI: false, */ type: "skill_assessment" },
+      { name: "Codewars", /* hasAPI: true, */ type: "skill_assessment" }
     ]
   },
   {
@@ -295,7 +295,7 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
     if (customValue.trim()) {
       onChange({
         name: customValue.trim(),
-        hasAPI: false,
+        // hasAPI: false, // Disabled for now
         type: "manual",
         category: "Custom"
       })
@@ -315,11 +315,11 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
           <span className={value ? "text-gray-900" : "text-gray-500"}>
             {value?.name || "Select organization"}
           </span>
-          {value?.hasAPI && (
-            <div className="flex items-center gap-1 mt-1">
-              <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-              <span className="text-xs text-green-600">API Integration Available</span>
-            </div>
+          {/* API Integration disabled for now */}
+          {/* <div className="flex items-center gap-1 mt-1">
+            <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+            <span className="text-xs text-green-600">API Integration Available</span>
+          </div> */}
           )}
         </div>
         <Search className="w-4 h-4 text-gray-400" />
@@ -360,11 +360,11 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-700 hover:text-blue-600">{org.name}</span>
-                        {org.hasAPI && (
-                          <div className="flex items-center gap-1">
-                            <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                            <span className="text-xs text-green-600">API</span>
-                          </div>
+                        {/* API Integration disabled for now */}
+                        {/* <div className="flex items-center gap-1">
+                          <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
+                          <span className="text-xs text-green-600">API</span>
+                        </div> */}
                         )}
                       </div>
                     </div>
@@ -555,30 +555,30 @@ export default function MintPage() {
           evidenceUrl: formData.evidenceUrl,
           skillLevel: formData.skillLevel,
           credentialType: formData.credentialType,
-          hasAPI: formData.issuerOrganization?.hasAPI || false,
+          // hasAPI: formData.issuerOrganization?.hasAPI || false, // Disabled for now
         }
       }
       
-      // API Integration for supported organizations
-      if (formData.issuerOrganization?.hasAPI) {
-        try {
-          // This is where backend engineers will integrate with various APIs
-          // const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name) // Removed unused variable
-          const verificationData = await verifyCredentialWithAPI()
-          
-          if (!verificationData.isValid) {
-            toast({
-              title: "Verification Failed",
-              description: "Could not verify credential with the issuing organization",
-              variant: "destructive"
-            })
-            return
-          }
-        } catch (error) {
-          console.error('API verification failed:', error)
-          // Continue with manual verification
-        }
-      }
+      // API Integration disabled for now
+      // if (formData.issuerOrganization?.hasAPI) {
+      //   try {
+      //     // This is where backend engineers will integrate with various APIs
+      //     // const getapiEndpoint = getAPIEndpoint(formData.issuerOrganization.name) // Removed unused variable
+      //     const verificationData = await verifyCredentialWithAPI()
+
+      //     if (!verificationData.isValid) {
+      //       toast({
+      //         title: "Verification Failed",
+      //         description: "Could not verify credential with the issuing organization",
+      //         variant: "destructive"
+      //       })
+      //       return
+      //     }
+      //   } catch (error) {
+      //     console.error('API verification failed:', error)
+      //     // Continue with manual verification
+      //   }
+      // }
       
       // Create credential using live API
       const newCredential = await addMintedCredential(credentialData)
@@ -611,8 +611,7 @@ export default function MintPage() {
   // Helper function for API endpoint mapping (for backend integration)
   // const getAPIEndpoint = (organizationName: string): string => { // Removed unused function
   //   const apiEndpoints: Record<string, string> = {
-  //     "GitHub": "/api/verify/github",
-  //     "Coursera": "/api/verify/coursera", 
+  //     "Coursera": "/api/verify/coursera",
   //     "Udemy": "/api/verify/udemy",
   //     "Amazon Web Services (AWS)": "/api/verify/aws",
   //     "Microsoft": "/api/verify/microsoft",
@@ -759,17 +758,16 @@ export default function MintPage() {
                             value={formData.issuerOrganization}
                             onChange={(value: Organization) => updateFormData("issuerOrganization", value)}
                           />
-                          {formData.issuerOrganization?.hasAPI && (
-                            <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                              <div className="flex items-center gap-2 mb-1">
-                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-                                <span className="text-xs font-medium text-green-700">API Integration Available</span>
-                              </div>
-                              <p className="text-xs text-green-600">
-                                We can automatically verify your credential from {formData.issuerOrganization.name}
-                              </p>
+                          {/* API Integration disabled for now */}
+                          {/* <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                              <span className="text-xs font-medium text-green-700">API Integration Available</span>
                             </div>
-                          )}
+                            <p className="text-xs text-green-600">
+                              We can automatically verify your credential from {formData.issuerOrganization.name}
+                            </p>
+                          </div> */}
                         </div>
                       </div>
                       
@@ -844,14 +842,13 @@ export default function MintPage() {
                         />
                       </div>
 
-                      {/* API Integration Notice */}
-                      {formData.issuerOrganization?.hasAPI && (
-                        <Alert className="border-blue-200 bg-blue-50">
-                          <Shield className="h-4 w-4 text-blue-600" />
-                          <AlertDescription className="text-blue-700">
-                              <strong>Auto-Verification Available:</strong> We&apos;ll automatically verify this credential with {formData.issuerOrganization.name} during minting.
-                          </AlertDescription>
-                        </Alert>
+                      {/* API Integration disabled for now */}
+                      {/* <Alert className="border-blue-200 bg-blue-50">
+                        <Shield className="h-4 w-4 text-blue-600" />
+                        <AlertDescription className="text-blue-700">
+                            <strong>Auto-Verification Available:</strong> We&apos;ll automatically verify this credential with {formData.issuerOrganization.name} during minting.
+                        </AlertDescription>
+                      </Alert> */}
                       )}
 
                       {/* Mint Button */}

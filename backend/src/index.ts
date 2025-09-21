@@ -15,7 +15,6 @@ import { authenticateApiKey } from '@/middleware/auth';
 // Import routes
 import userRoutes from '@/controllers/userController';
 import credentialRoutes from '@/controllers/credentialController';
-import verificationRoutes from '@/controllers/verificationController';
 import analyticsRoutes from '@/controllers/analyticsController';
 import healthRoutes from '@/controllers/healthController';
 
@@ -84,7 +83,6 @@ app.use('/health', healthRoutes);
 // API routes
 app.use(`/api/${config.API_VERSION}/users`, userRoutes);
 app.use(`/api/${config.API_VERSION}/credentials`, credentialRoutes);
-app.use(`/api/${config.API_VERSION}/verify`, verificationRoutes);
 app.use(`/api/${config.API_VERSION}/analytics`, analyticsRoutes);
 
 // 404 handler

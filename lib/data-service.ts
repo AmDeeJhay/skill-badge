@@ -223,46 +223,9 @@ export const dataService = {
     }
   },
 
-  // Verification
-  async verifyCredential(verificationData: {
-    credentialId: string;
-    externalVerification?: {
-      github?: string;
-      linkedin?: string;
-    };
-  }, token?: string): Promise<Record<string, unknown> | null> {
-    try {
-      const response = await apiClient.verifyCredential(verificationData, token) as ApiResponse<Record<string, unknown>>;
-      return response.data;
-    } catch (error) {
-      console.error('Failed to verify credential:', error);
-      return null;
-    }
-  },
-
-  async verifyGitHubSkill(username: string, skill: string): Promise<Record<string, unknown> | null> {
-    try {
-      const response = await apiClient.verifyGitHubSkill(username, skill) as ApiResponse<Record<string, unknown>>;
-      return response.data;
-    } catch (error) {
-      console.error('Failed to verify GitHub skill:', error);
-      return null;
-    }
-  },
-
-  async verifyMultiSource(verificationData: {
-    skillName: string;
-    githubUsername?: string;
-    linkedinProfileId?: string;
-  }, token?: string): Promise<Record<string, unknown> | null> {
-    try {
-      const response = await apiClient.verifyMultiSource(verificationData, token) as ApiResponse<Record<string, unknown>>;
-      return response.data;
-    } catch (error) {
-      console.error('Failed to perform multi-source verification:', error);
-      return null;
-    }
-  },
+  // Verification - External verification removed
+  // Note: External verification features (GitHub, LinkedIn) have been temporarily disabled
+  // as we don't have access to those organization APIs at this time
 
   // Analytics
   async getOverviewStats(): Promise<Record<string, unknown> | null> {
@@ -285,15 +248,6 @@ export const dataService = {
     }
   },
 
-  async getVerificationStats(): Promise<Record<string, unknown> | null> {
-    try {
-      const response = await apiClient.getVerificationStats() as ApiResponse<Record<string, unknown>>;
-      return response.data;
-    } catch (error) {
-      console.error('Failed to fetch verification stats:', error);
-      return null;
-    }
-  },
 
   async getUserGrowth(period = '30d'): Promise<Record<string, unknown> | null> {
     try {

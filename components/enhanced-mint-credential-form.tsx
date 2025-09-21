@@ -9,33 +9,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { usePolkadotWallet } from "@/hooks/use-polkadot-wallet"
 import { useToast } from "@/hooks/use-toast"
-import { 
-  validateCredentialIssue, 
+import {
+  validateCredentialIssue,
   type CredentialIssueData,
   type SkillCredentialData,
   type ExperienceCredentialData
 } from "@/lib/validation"
-import { 
-  didManager, 
-  credentialIssuer, 
+import {
+  didManager,
+  credentialIssuer,
   credentialVerifier,
-  type VerifiableCredential 
+  type VerifiableCredential
 } from "@/lib/w3c-vc"
-import { verificationServiceManager } from "@/lib/external-integrations"
 import { backendIntegration } from "@/lib/backend-integration"
-import { type VerificationResult } from "@/lib/types"
-import { 
-  Loader2, 
-  CheckCircle, 
-  AlertCircle, 
-  Award, 
-  Calendar, 
-  User, 
+import {
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Award,
+  Calendar,
+  User,
   FileText,
   Shield,
   ExternalLink,
-  Github,
-  Linkedin,
   Clock,
   XCircle
 } from "lucide-react"
@@ -75,21 +71,9 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
     description: ""
   })
   
-  const [externalVerification, setExternalVerification] = useState({
-    githubUsername: "",
-    linkedinProfileId: "",
-    enableVerification: false
-  })
-  
   const [expirationDate, setExpirationDate] = useState("")
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationResult, setVerificationResult] = useState<{
-    github?: VerificationResult
-    linkedin?: VerificationResult
-    combined: VerificationResult
-  } | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -118,52 +102,6 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
     setErrors({})
   }
 
-  const handleExternalVerification = async () => {
-    if (!externalVerification.githubUsername && !externalVerification.linkedinProfileId) {
-      toast({
-        title: "Verification Error",
-        description: "Please provide at least one external verification source",
-        variant: "destructive"
-      })
-      return
-    }
-
-    setIsVerifying(true)
-    try {
-      const skillName = credentialType === 'SkillCredential' 
-        ? (formData as SkillCredentialData).skillName 
-        : (formData as ExperienceCredentialData).projectTitle
-
-      const result = await verificationServiceManager.verifySkillWithMultipleSources(
-        externalVerification.githubUsername,
-        externalVerification.linkedinProfileId,
-        skillName
-      )
-
-      setVerificationResult(result)
-      
-      if (result.combined.isValid) {
-        toast({
-          title: "Verification Successful",
-          description: `Skill verified with ${result.combined.confidence * 100}% confidence`
-        })
-      } else {
-        toast({
-          title: "Verification Failed",
-          description: "Could not verify skill with external sources",
-          variant: "destructive"
-        })
-      }
-    } catch {
-      toast({
-        title: "Verification Error",
-        description: "Failed to verify skill with external sources",
-        variant: "destructive"
-      })
-    } finally {
-      setIsVerifying(false)
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -269,22 +207,6 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
         throw new Error(`Credential verification failed: ${verification.errors.join(', ')}`)
       }
 
-      // If external verification was performed, verify with backend
-      if (verificationResult?.combined.isValid) {
-        try {
-          await backendIntegration.verifyCredentialWithExternalSources(
-            backendCredentialResponse.data.id,
-            {
-              github: externalVerification.githubUsername || undefined,
-              linkedin: externalVerification.linkedinProfileId || undefined,
-            }
-          )
-        } catch (error) {
-          console.warn('Backend verification failed:', error)
-          // Continue with local verification
-        }
-      }
-
       toast({
         title: "Credential minted successfully!",
         description: `Your ${credentialType} has been created and verified on the blockchain.`,
@@ -307,7 +229,6 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
         evidenceUrl: ""
       })
       setExpirationDate("")
-      setVerificationResult(null)
 
       onSuccess?.(credential)
     } catch (error) {
@@ -582,105 +503,6 @@ export function EnhancedMintCredentialForm({ onSuccess }: EnhancedMintCredential
               </p>
             </div>
 
-            {/* External Verification */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Shield className="w-5 h-5" />
-                  External Verification
-                </CardTitle>
-                <CardDescription>
-                  Verify your skills with external platforms for higher credibility
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="enableVerification"
-                    checked={externalVerification.enableVerification}
-                    onChange={(e) => setExternalVerification(prev => ({
-                      ...prev,
-                      enableVerification: e.target.checked
-                    }))}
-                  />
-                  <Label htmlFor="enableVerification">Enable external verification</Label>
-                </div>
-
-                {externalVerification.enableVerification && (
-                  <>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="githubUsername" className="flex items-center gap-2">
-                          <Github className="w-4 h-4" />
-                          GitHub Username
-                        </Label>
-                        <Input
-                          id="githubUsername"
-                          placeholder="your-github-username"
-                          value={externalVerification.githubUsername}
-                          onChange={(e) => setExternalVerification(prev => ({
-                            ...prev,
-                            githubUsername: e.target.value
-                          }))}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="linkedinProfileId" className="flex items-center gap-2">
-                          <Linkedin className="w-4 h-4" />
-                          LinkedIn Profile ID
-                        </Label>
-                        <Input
-                          id="linkedinProfileId"
-                          placeholder="linkedin-profile-id"
-                          value={externalVerification.linkedinProfileId}
-                          onChange={(e) => setExternalVerification(prev => ({
-                            ...prev,
-                            linkedinProfileId: e.target.value
-                          }))}
-                        />
-                      </div>
-                    </div>
-
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={handleExternalVerification}
-                      disabled={isVerifying}
-                      className="w-full"
-                    >
-                      {isVerifying ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Verifying...
-                        </>
-                      ) : (
-                        <>
-                          <Shield className="w-4 h-4 mr-2" />
-                          Verify with External Sources
-                        </>
-                      )}
-                    </Button>
-
-                    {verificationResult && (
-                      <Alert className={verificationResult.combined.isValid ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-                        <div className="flex items-center gap-2">
-                          {verificationResult.combined.isValid ? (
-                            <CheckCircle className="h-4 w-4 text-green-600" />
-                          ) : (
-                            <XCircle className="h-4 w-4 text-red-600" />
-                          )}
-                          <AlertDescription className={verificationResult.combined.isValid ? "text-green-700" : "text-red-700"}>
-                            <strong>Verification Result:</strong> {verificationResult.combined.isValid ? 'Verified' : 'Not Verified'} 
-                            (Confidence: {Math.round(verificationResult.combined.confidence * 100)}%)
-                          </AlertDescription>
-                        </div>
-                      </Alert>
-                    )}
-                  </>
-                )}
-              </CardContent>
-            </Card>
 
             {/* Submit Button */}
             <div className="flex gap-3 pt-4">

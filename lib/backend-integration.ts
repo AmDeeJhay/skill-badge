@@ -109,23 +109,7 @@ class ApiClient {
     });
   }
 
-  async verifyGitHubSkill(username: string, skill: string) {
-    return this.request(`/verify/github/${username}?skill=${encodeURIComponent(skill)}`);
-  }
 
-  async verifyMultiSource(verificationData: Record<string, unknown>, token?: string) {
-    return this.request('/verify/multi-source', {
-      method: 'POST',
-      body: JSON.stringify(verificationData),
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-  }
-
-  async getVerificationLogs(userId: string, token?: string) {
-    return this.request(`/verify/logs/${userId}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
-  }
 
   // Analytics
   async getOverviewStats() {
@@ -136,9 +120,6 @@ class ApiClient {
     return this.request(`/analytics/skills-trending?limit=${limit}`);
   }
 
-  async getVerificationStats() {
-    return this.request('/analytics/verification-stats');
-  }
 
   async getUserGrowth(period = '30d') {
     return this.request(`/analytics/user-growth?period=${period}`);
@@ -202,26 +183,6 @@ export const backendIntegration = {
     }
   },
 
-  // Verify credential with external sources
-  async verifyCredentialWithExternalSources(
-    credentialId: string,
-    externalVerification: {
-      github?: string;
-      linkedin?: string;
-    },
-    token?: string
-  ) {
-    try {
-      const result = await apiClient.verifyCredential(
-        { credentialId, externalVerification },
-        token
-      );
-      return result;
-    } catch (error) {
-      console.error('Failed to verify credential:', error);
-      throw error;
-    }
-  },
 
   // Get user's complete profile with credentials
   async getUserProfile(wallet: string) {
@@ -246,17 +207,15 @@ export const backendIntegration = {
   // Get platform analytics
   async getPlatformAnalytics() {
     try {
-      const [overview, trendingSkills, verificationStats, userGrowth] = await Promise.all([
+      const [overview, trendingSkills, userGrowth] = await Promise.all([
         apiClient.getOverviewStats(),
         apiClient.getTrendingSkills(),
-        apiClient.getVerificationStats(),
         apiClient.getUserGrowth(),
       ]);
 
       return {
         overview,
         trendingSkills,
-        verificationStats,
         userGrowth,
       };
     } catch (error) {

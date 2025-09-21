@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - API_KEY=${API_KEY}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    volumes:
+      - uploads:/app/uploads
+      - logs:/app/logs
+    networks:
+      - skillbadge-network
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=skillbadge_prod
+      - POSTGRES_USER=skillbadge_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - skillbadge-network
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - skillbadge-network
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+    networks:
+      - skillbadge-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  uploads:
+  logs:
+
+networks:
+  skillbadge-network:
+    driver: bridge

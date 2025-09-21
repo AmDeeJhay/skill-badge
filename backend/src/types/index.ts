@@ -150,10 +150,6 @@ export interface CreateCredentialRequest {
 
 export interface VerifyCredentialRequest {
   credentialId: string;
-  externalVerification?: {
-    github?: string;
-    linkedin?: string;
-  };
 }
 
 export interface ApiResponse<T = any> {
@@ -173,53 +169,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   };
 }
 
-// External API types
-export interface GitHubUser {
-  login: string;
-  id: number;
-  avatar_url: string;
-  html_url: string;
-  name?: string;
-  bio?: string;
-  public_repos: number;
-  followers: number;
-  following: number;
-  created_at: string;
-}
-
-export interface GitHubRepository {
-  id: number;
-  name: string;
-  full_name: string;
-  description?: string;
-  language?: string;
-  languages_url: string;
-  stargazers_count: number;
-  forks_count: number;
-  created_at: string;
-  updated_at: string;
-  pushed_at: string;
-}
-
-export interface LinkedInProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  headline?: string;
-  summary?: string;
-  skills?: string[];
-  experience?: LinkedInExperience[];
-}
-
-export interface LinkedInExperience {
-  id: string;
-  title: string;
-  companyName: string;
-  description?: string;
-  startDate: string;
-  endDate?: string;
-  skills?: string[];
-}
 
 // W3C Verifiable Credential types
 export interface VerifiableCredential {

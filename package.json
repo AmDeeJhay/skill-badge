@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:prod": "NODE_ENV=production next build",
     "start": "next start",
+    "start:prod": "NODE_ENV=production next start",
     "lint": "eslint",
     "backend:dev": "cd backend; npm run dev",
     "backend:build": "cd backend; npm run build",
@@ -18,7 +20,10 @@
     "setup": "npm install; npm run backend:setup",
     "start:ps1": "powershell -ExecutionPolicy Bypass -File start.ps1",
     "backend:setup:ps1": "powershell -ExecutionPolicy Bypass -File backend/setup.ps1",
-    "backend:migrate:ps1": "powershell -ExecutionPolicy Bypass -File backend/migrate.ps1"
+    "backend:migrate:ps1": "powershell -ExecutionPolicy Bypass -File backend/migrate.ps1",
+    "docker:build": "docker build -t skill-badge-frontend .",
+    "docker:run": "docker run -p 3000:3000 skill-badge-frontend",
+    "deploy:prod": "npm run build:prod && cd backend && npm run deploy:prod"
   },
   "dependencies": {
     "@digitalbazaar/credentials-context": "^3.2.0",
