@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useToast } from "@/hooks/use-toast"
 import { addMintedCredential } from "@/lib/data-service"
-import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Globe, AlertTriangle, X, Search, Calendar, Building, Code,  Link as LinkIcon } from "lucide-react"
+import { CheckCircle, ArrowLeft, ExternalLink, Share2, Award, Shield, Globe, AlertTriangle, X, Search, Calendar, Building, Code, Link as LinkIcon } from "lucide-react"
 // import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -173,11 +173,11 @@ function GlowingCard({ children, className = "", glowColor = "blue" }: GlowingCa
 }
 
 // Custom Select Component with Search
-function SearchableSelect({ 
-  options, 
-  value, 
-  onChange, 
-  placeholder, 
+function SearchableSelect({
+  options,
+  value,
+  onChange,
+  placeholder,
   allowCustom = false,
   onCustomValue = null,
   icon = null
@@ -186,7 +186,7 @@ function SearchableSelect({
   const [searchTerm, setSearchTerm] = useState("")
   const [customValue, setCustomValue] = useState("")
 
-  const filteredOptions = options.filter((option: string) => 
+  const filteredOptions = options.filter((option: string) =>
     option.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
@@ -206,7 +206,7 @@ function SearchableSelect({
 
   return (
     <div className="relative">
-      <div 
+      <div
         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200 cursor-pointer flex items-center gap-3"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -229,7 +229,7 @@ function SearchableSelect({
               autoFocus
             />
           </div>
-          
+
           <div className="max-h-40 overflow-y-auto">
             {filteredOptions.map((option: string, index: number) => (
               <div
@@ -240,7 +240,7 @@ function SearchableSelect({
                 {option}
               </div>
             ))}
-            
+
             {filteredOptions.length === 0 && !allowCustom && (
               <div className="px-4 py-2 text-sm text-gray-500">No options found</div>
             )}
@@ -256,8 +256,8 @@ function SearchableSelect({
                   onChange={(e) => setCustomValue(e.target.value)}
                   className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                 />
-                <Button 
-                  size="sm" 
+                <Button
+                  size="sm"
                   onClick={handleCustomSubmit}
                   className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs"
                 >
@@ -306,7 +306,7 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
 
   return (
     <div className="relative">
-      <div 
+      <div
         className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent transition-all duration-200 cursor-pointer flex items-center gap-3"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -320,7 +320,6 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
             <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
             <span className="text-xs text-green-600">API Integration Available</span>
           </div> */}
-          )}
         </div>
         <Search className="w-4 h-4 text-gray-400" />
       </div>
@@ -337,16 +336,16 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
               autoFocus
             />
           </div>
-          
+
           <div className="max-h-60 overflow-y-auto">
             {ORGANIZATIONS.map((category) => {
-              const categoryOrgs = category.organizations.filter((org: Organization) => 
+              const categoryOrgs = category.organizations.filter((org: Organization) =>
                 org.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 category.category.toLowerCase().includes(searchTerm.toLowerCase())
               )
-              
+
               if (categoryOrgs.length === 0) return null
-              
+
               return (
                 <div key={category.category}>
                   <div className="px-4 py-2 bg-gray-50 text-xs font-semibold text-gray-600 uppercase tracking-wide">
@@ -360,12 +359,8 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-700 hover:text-blue-600">{org.name}</span>
-                        {/* API Integration disabled for now */}
-                        {/* <div className="flex items-center gap-1">
-                          <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
-                          <span className="text-xs text-green-600">API</span>
-                        </div> */}
-                        )}
+
+
                       </div>
                     </div>
                   ))}
@@ -384,8 +379,8 @@ function OrganizationSelect({ value, onChange }: OrganizationSelectProps) {
                 onChange={(e) => setCustomValue(e.target.value)}
                 className="flex-1 px-3 py-2 text-gray-700 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
               />
-              <Button 
-                size="sm" 
+              <Button
+                size="sm"
                 onClick={handleCustomSubmit}
                 className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs"
               >
@@ -445,14 +440,14 @@ function ImportantNoticeModal({ isOpen, onClose, onAgree }: ImportantNoticeModal
           </div>
 
           <div className="flex gap-3">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={onClose}
               className="flex-1 border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-800"
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={onAgree}
               className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 font-semibold shadow-lg"
             >
@@ -494,7 +489,7 @@ function SuccessModal({ isOpen, onClose, onViewCredential }: SuccessModalProps) 
             <span className="text-sm text-green-600 font-mono">Transaction Confirmed</span>
           </div>
 
-          <Button 
+          <Button
             onClick={onViewCredential}
             className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 font-semibold shadow-lg"
           >
@@ -517,7 +512,7 @@ export default function MintPage() {
     evidenceUrl: "",
     credentialType: ""
   })
-  
+
   const [mintedCredential, setMintedCredential] = useState<MintedCredential | null>(null)
   const [showNoticeModal, setShowNoticeModal] = useState(false)
   const [showSuccessModal, setShowSuccessModal] = useState(false)
@@ -542,7 +537,7 @@ export default function MintPage() {
 
   const handleNoticeAgree = async () => {
     setShowNoticeModal(false)
-    
+
     try {
       // Create credential using live API
       const credentialData = {
@@ -558,7 +553,7 @@ export default function MintPage() {
           // hasAPI: formData.issuerOrganization?.hasAPI || false, // Disabled for now
         }
       }
-      
+
       // API Integration disabled for now
       // if (formData.issuerOrganization?.hasAPI) {
       //   try {
@@ -579,10 +574,10 @@ export default function MintPage() {
       //     // Continue with manual verification
       //   }
       // }
-      
+
       // Create credential using live API
       const newCredential = await addMintedCredential(credentialData)
-      
+
       if (newCredential) {
         const mockCredential: MintedCredential = {
           credentialId: newCredential.id,
@@ -590,7 +585,7 @@ export default function MintPage() {
         }
         setMintedCredential(mockCredential)
         setShowSuccessModal(true)
-        
+
         toast({
           title: "Credential Created",
           description: "Your skill credential has been successfully created",
@@ -642,7 +637,7 @@ export default function MintPage() {
 
   const handleShare = async () => {
     if (!mintedCredential?.credentialId) return
-    
+
     const shareUrl = `${window.location.origin}/credential/${mintedCredential.credentialId}`
     if (navigator.share) {
       try {
@@ -716,7 +711,7 @@ export default function MintPage() {
             <div className="grid lg:grid-cols-3 gap-8">
               {/* Left Column - Credential Form */}
               <div className="lg:col-span-2">
-                <GlowingCard glowColor="blue"  className="shadow-xs bg-white"> {/* card styles */}
+                <GlowingCard glowColor="blue" className="shadow-xs bg-white"> {/* card styles */}
                   <CardHeader className="pb-6">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-md shadow-blue-500/25">
@@ -745,7 +740,7 @@ export default function MintPage() {
                             allowCustom={true}
                             onCustomValue={(value: string) => updateFormData("skillName", value)}
                             icon={<Code className="w-4 h-4" />}
-                            
+
                           />
                         </div>
 
@@ -770,12 +765,12 @@ export default function MintPage() {
                           </div> */}
                         </div>
                       </div>
-                      
+
                       {/* Skill Level and Dates */}
                       <div className="grid md:grid-cols-3 gap-6">
                         <div className="space-y-2">
                           <label className="text-sm font-semibold text-gray-700">Skill Level</label>
-                          <select 
+                          <select
                             value={formData.skillLevel}
                             onChange={(e) => updateFormData("skillLevel", e.target.value)}
                             className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-gray-900"
@@ -849,11 +844,10 @@ export default function MintPage() {
                             <strong>Auto-Verification Available:</strong> We&apos;ll automatically verify this credential with {formData.issuerOrganization.name} during minting.
                         </AlertDescription>
                       </Alert> */}
-                      )}
 
                       {/* Mint Button */}
                       <div className="pt-6">
-                        <Button 
+                        <Button
                           onClick={handleMintAttempt}
                           className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 font-semibold py-4 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
                           size="lg"
@@ -879,7 +873,7 @@ export default function MintPage() {
                       <CardDescription className="text-indigo-600">See how your credential will look</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <CredentialPreview 
+                      <CredentialPreview
                         skillName={formData.skillName || "Your Skill"}
                         issuer={formData.issuerOrganization?.name || "Issuing Organization"}
                         level={formData.skillLevel}
@@ -923,7 +917,7 @@ export default function MintPage() {
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Credential Minted Successfully!</h1>
               <p className="text-gray-600 mb-6">Your skill credential is now live on the Polkadot blockchain</p>
-              
+
               <div className="flex flex-wrap justify-center gap-4 mb-8">
                 <Button onClick={handleShare} variant="outline" className="flex items-center gap-2">
                   <Share2 className="w-4 h-4" />
@@ -942,7 +936,7 @@ export default function MintPage() {
 
             <GlowingCard glowColor="blue" className="shadow-xl bg-white">
               <CardContent className="p-8">
-                <CredentialPreview 
+                <CredentialPreview
                   skillName={formData.skillName}
                   issuer={formData.issuerOrganization?.name}
                   level={formData.skillLevel}
@@ -961,13 +955,13 @@ export default function MintPage() {
       </div>
 
       {/* Modals */}
-      <ImportantNoticeModal 
+      <ImportantNoticeModal
         isOpen={showNoticeModal}
         onClose={() => setShowNoticeModal(false)}
         onAgree={handleNoticeAgree}
       />
-      
-      <SuccessModal 
+
+      <SuccessModal
         isOpen={showSuccessModal}
         onClose={() => setShowSuccessModal(false)}
         onViewCredential={handleSuccessViewCredential}

@@ -1,0 +1,35 @@
+{
+  service: 'skill-badge-backend',
+  name: 'PrismaClientInitializationError',
+  clientVersion: '5.22.0',
+  errorCode: undefined,
+  level: 'error',
+  message: 'Error seeding database: \n' +
+    'Invalid `prisma.verificationLog.deleteMany()` invocation in\n' +
+    'C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\src\\utils\\seed.ts:147:34\n' +
+    '\n' +
+    "  144 logger.info('Starting database seeding...');\n" +
+    '  145 \n' +
+    '  146 // Clear existing data\n' +
+    '→ 147 await prisma.verificationLog.deleteMany(\n' +
+    "Can't reach database server at `localhost:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `localhost:5432`.',
+  stack: 'PrismaClientInitializationError: \n' +
+    'Invalid `prisma.verificationLog.deleteMany()` invocation in\n' +
+    'C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\src\\utils\\seed.ts:147:34\n' +
+    '\n' +
+    "  144 logger.info('Starting database seeding...');\n" +
+    '  145 \n' +
+    '  146 // Clear existing data\n' +
+    '→ 147 await prisma.verificationLog.deleteMany(\n' +
+    "Can't reach database server at `localhost:5432`\n" +
+    '\n' +
+    'Please make sure your database server is running at `localhost:5432`.\n' +
+    '    at $n.handleRequestError (C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:7615)\n' +
+    '    at $n.handleAndLogRequestError (C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:6623)\n' +
+    '    at $n.request (C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:121:6307)\n' +
+    '    at async l (C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\node_modules\\@prisma\\client\\runtime\\library.js:130:9633)\n' +
+    '    at async seedDatabase (C:\\Users\\DeeJhay\\Documents\\skill-badge\\backend\\src\\utils\\seed.ts:147:5)',
+  timestamp: '2025-09-25 23:31:52'
+}

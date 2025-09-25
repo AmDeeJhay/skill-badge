@@ -71,14 +71,14 @@ const mintEnhancedFeatures = [
     ]
   },
   {
-    title: "External Verification",
-    description: "Verify skills with external platforms for higher credibility",
-    icon: ExternalLink,
+    title: "Credential Verification",
+    description: "Built-in verification system for credential validity",
+    icon: CheckCircle,
     details: [
-      "GitHub API integration",
-      "LinkedIn profile verification",
-      "Multi-source verification",
-      "Confidence scoring system"
+      "Cryptographic signature verification",
+      "W3C compliance checking",
+      "Internal verification logic",
+      "Real-time validation"
     ]
   },
   {

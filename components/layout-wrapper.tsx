@@ -10,15 +10,11 @@ interface LayoutWrapperProps {
 }
 
 export function LayoutWrapper({ children }: LayoutWrapperProps) {
+  const pathname = usePathname()
   const [mounted, setMounted] = useState(false)
-  const [pathname, setPathname] = useState("/")
 
   useEffect(() => {
     setMounted(true)
-    // Get pathname after component mounts to avoid hydration mismatch
-    if (typeof window !== "undefined") {
-      setPathname(window.location.pathname)
-    }
   }, [])
 
   const isLandingPage = pathname === "/"

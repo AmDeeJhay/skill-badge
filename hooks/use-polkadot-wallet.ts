@@ -168,7 +168,8 @@ export function usePolkadotWallet() {
 
   useEffect(() => {
     const restoreConnection = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      // Wait for the component to mount and router to be available
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
       const wasConnected = localStorage.getItem("polkadot-wallet-connected")
       const savedAccount = localStorage.getItem("polkadot-selected-account")
@@ -196,7 +197,7 @@ export function usePolkadotWallet() {
                 selectedAccount,
                 error: null,
               })
-              
+
               // Load credentials for the restored account
               loadCredentials(selectedAccount.address)
             }
